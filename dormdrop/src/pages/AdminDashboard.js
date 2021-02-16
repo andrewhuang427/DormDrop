@@ -6,7 +6,6 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -22,7 +21,9 @@ import Restaurant from "../components/Admin/Restaurants/Restaurant";
 import Dorm from "../components/Admin/Dorms/Dorm";
 import CampusRegion from "../components/Admin/CampusRegions/CampusRegion";
 import TimeSlot from "../components/Admin/TimeSlots/TimeSlot";
+import Logo from "../images/logo.png";
 import styled from "styled-components";
+import { signOut } from "../firebase/firebase";
 
 const drawerWidth = 240;
 
@@ -46,6 +47,10 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
+  logoContainer: {
+    height: 40,
+  },
+  logo: { height: "100%", objectFit: "contain" },
   menuButton: {
     marginRight: theme.spacing(2),
   },
@@ -130,9 +135,9 @@ export default function PersistentDrawerLeft() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
-            Persistent drawer
-          </Typography>
+          <div className={classes.logoContainer}>
+            <img className={classes.logo} src={Logo} />
+          </div>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -164,7 +169,7 @@ export default function PersistentDrawerLeft() {
         </List>
         <Divider />
         <List>
-          <ListItem button>
+          <ListItem button onClick={signOut}>
             <ListItemIcon>
               <ExitToAppIcon />
             </ListItemIcon>
@@ -185,10 +190,10 @@ export default function PersistentDrawerLeft() {
           <Restaurant />
         </SectionContainer>
         <SectionContainer>
-          <Dorm />
+          <CampusRegion />
         </SectionContainer>
         <SectionContainer>
-          <CampusRegion />
+          <Dorm />
         </SectionContainer>
       </main>
     </div>

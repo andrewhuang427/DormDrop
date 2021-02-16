@@ -13,7 +13,7 @@ function LoadingPage() {
   return (
     <Container>
       <ScaleLoader
-        color={"#3ab44acc"}
+        color={"#3ab44a55"}
         height={100}
         width={12}
         radius={20}
