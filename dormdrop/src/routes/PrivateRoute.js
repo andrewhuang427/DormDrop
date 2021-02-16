@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "../provider/UserProvider";
 import { Route, Redirect } from "react-router-dom";
-import LoadingPage from "../pages/LoadingPage";
+import Loading from "../pages/Loading";
 
 function PrivateRoute({ component: Component, ...rest }) {
   const { user } = useContext(UserContext);
@@ -25,7 +25,7 @@ function PrivateRoute({ component: Component, ...rest }) {
     <>
       <Route
         {...rest}
-        render={(props) => (isLoading ? <LoadingPage /> : handleRoute(props))}
+        render={(props) => (isLoading ? <Loading /> : handleRoute(props))}
       ></Route>
     </>
   );

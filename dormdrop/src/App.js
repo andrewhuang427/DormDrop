@@ -9,7 +9,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import Protected from "./pages/Protected";
+import AdminDashboard from "./pages/AdminDashboard";
 function App() {
   return (
     <UserProvider>
@@ -29,7 +29,7 @@ function App() {
               path="/register"
               exact
             />
-            <PrivateRoute component={Protected} path="/protected" exact />
+            <PrivateRoute component={AdminDashboard} path="/protected" exact />
           </Switch>
         </div>
       </Router>

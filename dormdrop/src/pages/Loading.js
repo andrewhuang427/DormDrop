@@ -9,11 +9,6 @@ const Container = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-const Text = styled.div`
-  text-align: center;
-  margin-top: 10px;
-`;
-
 function LoadingPage() {
   return (
     <Container>
@@ -24,7 +19,6 @@ function LoadingPage() {
         radius={20}
         margin={5}
       />
-      <Text>Loading...</Text>
     </Container>
   );
 }

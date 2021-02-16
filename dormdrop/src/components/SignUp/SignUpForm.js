@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { signInWithGoogle } from "../../firebase/firebase";
+import {
+  signInWithGoogle,
+  handleCreatingUserWithEmailAndPassword,
+} from "../../firebase/firebase";
 import Logo from "../../images/logo.png";
 import GoogleLogo from "../../images/google.png";
+import { withStyles } from "@material-ui/core/styles";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const Container = styled.div`
   display: flex;
@@ -16,6 +21,19 @@ const Container = styled.div`
   box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.2);
   padding: 40px;
 `;
+
+const ProgressBarContainer = styled.div``;
+
+const GreenLinearProgress = withStyles({
+  colorPrimary: {
+    background:
+      " linear-gradient(90deg, rgba(68,251,15,1) 0%, rgba(53,210,185,1) 14%, rgba(78,114,255,1) 35%, rgba(67,105,255,1) 46%, rgba(231,125,255,1) 72%, rgba(36,255,234,1) 95%)",
+    height: 5,
+  },
+  barColorPrimary: {
+    background: "#ffffff66",
+  },
+})(LinearProgress);
 
 const Content = styled.div`
   width: 100%;
@@ -95,7 +113,7 @@ const GoogleButton = styled.button`
 `;
 
 const GoogleLogoContainer = styled.div`
-  height: 100%;
+  height: 30px;
   img {
     height: 100%;
     object-fit: contain;
@@ -111,68 +129,99 @@ function SignInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showProgress, setShowProgress] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     if (password === confirmPassword) {
+      setProgress(0);
+      setShowProgress(true);
+      handleCreatingUserWithEmailAndPassword(email, password);
     }
   };
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((oldProgress) => {
+        if (oldProgress === 100) {
+          setShowProgress(false);
+          return 0;
+        }
+        const diff = Math.random() * 50;
+        return Math.min(oldProgress + diff, 100);
+      });
+    }, 500);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
   return (
-    <Container>
-      <Content>
-        <LogoContainer>
-          <Image src={Logo} />
-        </LogoContainer>
-        <Header>Sign-Up</Header>
-        <FormContainer>
-          <Form onSubmit={handleSubmit}>
-            <InputContainer>
-              <TextFieldLabel>Email Address</TextFieldLabel>
-              <Input
-                value={email}
-                onChange={(event) => {
-                  setEmail(event.target.value);
-                }}
-              />
-            </InputContainer>
-            <InputContainer>
-              <TextFieldLabel>Password</TextFieldLabel>
-              <Input
-                type="password"
-                value={password}
-                onChange={(event) => {
-                  setPassword(event.target.value);
-                }}
-              />
-            </InputContainer>
-            <InputContainer>
-              <TextFieldLabel>Confirm Password</TextFieldLabel>
-              <Input
-                type="password"
-                value={password}
-                onChange={(event) => {
-                  setPassword(event.target.value);
-                }}
-              />
-            </InputContainer>
-            <InputContainer>
-              <ButtonContainer>
-                <Button type="submit">Sign-In</Button>
-              </ButtonContainer>
-            </InputContainer>
-          </Form>
-        </FormContainer>
-        <ButtonContainer>
-          <GoogleButton onClick={signInWithGoogle}>
-            <GoogleLogoContainer>
-              <img src={GoogleLogo} />
-            </GoogleLogoContainer>
-            <Text>Sign-In With Google</Text>
-          </GoogleButton>
-        </ButtonContainer>
-      </Content>
-    </Container>
+    <>
+      {showProgress ? (
+        <ProgressBarContainer>
+          <GreenLinearProgress variant="determinate" value={progress} />
+        </ProgressBarContainer>
+      ) : (
+        ""
+      )}
+      <Container>
+        <Content>
+          <LogoContainer>
+            <Image src={Logo} />
+          </LogoContainer>
+          <Header>Sign-Up</Header>
+          <FormContainer>
+            <Form onSubmit={handleSubmit}>
+              <InputContainer>
+                <TextFieldLabel>Email Address</TextFieldLabel>
+                <Input
+                  value={email}
+                  onChange={(event) => {
+                    setEmail(event.target.value);
+                  }}
+                />
+              </InputContainer>
+              <InputContainer>
+                <TextFieldLabel>Password</TextFieldLabel>
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(event) => {
+                    setPassword(event.target.value);
+                  }}
+                />
+              </InputContainer>
+              <InputContainer>
+                <TextFieldLabel>Confirm Password</TextFieldLabel>
+                <Input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(event) => {
+                    setConfirmPassword(event.target.value);
+                  }}
+                />
+              </InputContainer>
+              <InputContainer>
+                <ButtonContainer>
+                  <Button type="submit">Sign-Up</Button>
+                </ButtonContainer>
+              </InputContainer>
+            </Form>
+          </FormContainer>
+          <ButtonContainer>
+            <GoogleButton onClick={signInWithGoogle}>
+              <GoogleLogoContainer>
+                <img src={GoogleLogo} />
+              </GoogleLogoContainer>
+              <Text>Sign-Up With Google</Text>
+            </GoogleButton>
+          </ButtonContainer>
+        </Content>
+      </Container>
+    </>
   );
 }
 

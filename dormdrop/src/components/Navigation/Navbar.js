@@ -99,14 +99,6 @@ function Navbar() {
         <LogoContainer>
           <Logo src={DormDropLogo} />
         </LogoContainer>
-        <Links>
-          <SignIn>
-            <Link to="/login">Sign In</Link>
-          </SignIn>
-          <Register>
-            <Link to="/register">Register</Link>
-          </Register>
-        </Links>
       </Container>
     </Nav>
   );

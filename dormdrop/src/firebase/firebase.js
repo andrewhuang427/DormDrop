@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/auth";
-import "firebase/firestore"
+import "firebase/firestore";
 
 var config = {
   apiKey: "AIzaSyAFocmubzICv_lj5Jrm380Fjl4MDA_7nH4",
@@ -26,7 +26,7 @@ export const signInWithGoogle = () => {
 
 // * ----- Email / Password Authentication ----- *
 
-export const generateUserDocument = async (user) => {
+const generateUserDocument = async (user) => {
   if (!user) return;
   const userRef = firestore.doc(`users/${user.uid}`);
   const snapshot = await userRef.get();
@@ -45,24 +45,25 @@ export const generateUserDocument = async (user) => {
 };
 
 export const handleCreatingUserWithEmailAndPassword = async (
-  event,
   email,
   password
 ) => {
-  event.preventDefault();
   try {
     const { user } = await auth.createUserWithEmailAndPassword(email, password);
-    generateUserDocument(user);
+    console.log("user successfully created...");
+    // generateUserDocument(user);
   } catch (error) {
     console.log("Error signing up with email and password", error);
   }
 };
 
-export const handleSignInWithEmailAndPassword = (event, email, password) => {
-  event.preventDefault();
-  auth.signInWithEmailAndPassword(email, password).catch((error) => {
-    console.log("Error occured signing in with username and password", error);
-  });
+export const handleSignInWithEmailAndPassword = async (email, password) => {
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+    console.log("user signed in successfully");
+  } catch (error) {
+    console.log("Error occurred while authenticating user");
+  }
 };
 
 export const signOut = () => {
