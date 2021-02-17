@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -8,8 +8,12 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 import styled from "styled-components";
-import { createCampusRegion } from "../../../firebase/firebase";
+import { db, updateDorm } from "../../../firebase/firebase";
 
 const styles = (theme) => ({
   root: {
@@ -58,15 +62,35 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
-export default function CampusRegionForm({ open, setOpen }) {
-  const [name, setName] = useState("");
+export default function EditDormForm({ open, setOpen, dorm }) {
+  const [name, setName] = useState(dorm.data.name);
+  const [campusRegion, setCampusRegion] = useState(dorm.data.campusRegion);
+  const [regions, setRegions] = useState([]);
+
+  const regionRef = db.collection("campusRegions");
+
+  const getRegions = () => {
+    regionRef.onSnapshot((querySnapshot) => {
+      let items = [];
+      querySnapshot.forEach((doc) => {
+        items.push({ id: doc.id, data: doc.data() });
+      });
+      console.log(items);
+      setRegions(items);
+    });
+  };
+
+  useEffect(() => {
+    getRegions();
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = {
       name,
+      campusRegion,
     };
-    createCampusRegion(data);
+    updateDorm(dorm.id, data);
     setOpen(false);
   };
 
@@ -81,13 +105,13 @@ export default function CampusRegionForm({ open, setOpen }) {
       open={open}
     >
       <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-        New Campus Region
+        New Dorm
       </DialogTitle>
       <Form onSubmit={handleSubmit}>
         <FormContainer>
           <TextFieldContainer>
             <TextField
-              label="Region Name"
+              label="Dorm Name"
               value={name}
               variant="outlined"
               onChange={(event) => {
@@ -96,6 +120,30 @@ export default function CampusRegionForm({ open, setOpen }) {
               fullWidth
             />
           </TextFieldContainer>
+        </FormContainer>
+        <FormContainer>
+          <FormControl fullWidth>
+            <InputLabel id="region-select-label">Campus Region</InputLabel>
+            <Select
+              labelId="region-select-label"
+              value={campusRegion}
+              onChange={(event) => {
+                setCampusRegion(event.target.value);
+              }}
+              label="Age"
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {regions.map((region, index) => {
+                return (
+                  <MenuItem value={region.data.name} key={index}>
+                    {region.data.name}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
         </FormContainer>
         <DialogActions>
           <Button autoFocus type="submit" color="primary">

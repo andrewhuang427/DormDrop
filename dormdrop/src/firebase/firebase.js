@@ -18,14 +18,14 @@ const app = !firebase.apps.length
 export const auth = firebase.auth();
 export const db = firebase.firestore();
 
-// * ----- Authentication with Google ----- *
+// * ----------- Authentication with Google ----------- *
 
 export const signInWithGoogle = () => {
   const provider = new firebase.auth.GoogleAuthProvider();
   auth.signInWithPopup(provider);
 };
 
-// * ----- Email / Password Authentication ----- *
+// * ----------- Email / Password Authentication ----------- *
 
 export const handleCreatingUserWithEmailAndPassword = async (
   email,
@@ -48,13 +48,17 @@ export const handleSignInWithEmailAndPassword = async (email, password) => {
   }
 };
 
-// * ----- Campus Region ----- *
+export const signOut = () => {
+  auth.signOut();
+};
+
+// * ----------- Create, Update, Delete Campus Region ----------- *
 
 const regionRef = db.collection("campusRegions");
 
-export const createCampusRegion = async (name) => {
+export const createCampusRegion = async (data) => {
   try {
-    await regionRef.add({ name });
+    await regionRef.add(data);
   } catch (error) {
     console.log(error);
     console.log("Error occurred creating campus region", error);
@@ -77,8 +81,32 @@ export const updateCampusRegion = async (id, data) => {
   }
 };
 
-export const signOut = () => {
-  auth.signOut();
+// * ----------- Create, Update, Delete Dorms ----------- *
+
+const dormRef = db.collection("dorms");
+
+export const createDorm = async (data) => {
+  try {
+    await dormRef.add(data);
+  } catch (error) {
+    console.log("Error occurred creating dorm", error);
+  }
+};
+
+export const deleteDorm = async (id) => {
+  try {
+    await dormRef.doc(id).delete();
+  } catch (error) {
+    console.log("Error occurred deleting  dorm", error);
+  }
+};
+
+export const updateDorm = async (id, data) => {
+  try {
+    await dormRef.doc(id).update(data);
+  } catch (error) {
+    console.log("Error occurred updating dorm");
+  }
 };
 
 export default app;

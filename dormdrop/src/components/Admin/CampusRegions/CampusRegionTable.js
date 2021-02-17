@@ -19,6 +19,20 @@ const useStyles = makeStyles({
   },
 });
 
+const sortCampusRegionsInAlphabeticalOrder = (regions) => {
+  regions.sort(function (a, b) {
+    if (a.data.name < b.data.name) {
+      return -1;
+    }
+    if (a.data.name > b.data.name) {
+      return 1;
+    }
+    return 0;
+  });
+  console.log(regions);
+  return regions;
+}
+
 export default function BasicTable() {
   const classes = useStyles();
   const [regions, setRegions] = useState([]);
@@ -31,8 +45,8 @@ export default function BasicTable() {
       querySnapshot.forEach((doc) => {
         items.push({ id: doc.id, data: doc.data() });
       });
-      console.log(items);
-      setRegions(items);
+      const sorted = sortCampusRegionsInAlphabeticalOrder(items);
+      setRegions(sorted);
     });
   };
 

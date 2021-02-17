@@ -1,13 +1,22 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
+
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+
+import styled from "styled-components";
+import { db, createDorm } from "../../../firebase/firebase";
 
 const styles = (theme) => ({
   root: {
@@ -21,6 +30,15 @@ const styles = (theme) => ({
     color: theme.palette.grey[500],
   },
 });
+
+const FormContainer = styled.div`
+  padding: 20px;
+  min-width: 450px;
+`;
+
+const Form = styled.form``;
+
+const TextFieldContainer = styled.div``;
 
 const DialogTitle = withStyles(styles)((props) => {
   const { children, classes, onClose, ...other } = props;
@@ -40,12 +58,6 @@ const DialogTitle = withStyles(styles)((props) => {
   );
 });
 
-const DialogContent = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiDialogContent);
-
 const DialogActions = withStyles((theme) => ({
   root: {
     margin: 0,
@@ -53,7 +65,40 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
-export default function CustomizedDialogs({ open, setOpen }) {
+export default function DormForm({ open, setOpen }) {
+  const [name, setName] = useState("");
+  const [campusRegion, setCampusRegion] = useState("");
+  const [regions, setRegions] = useState([]);
+
+  const regionRef = db.collection("campusRegions");
+
+  const getRegions = () => {
+    regionRef.onSnapshot((querySnapshot) => {
+      let items = [];
+      querySnapshot.forEach((doc) => {
+        items.push({ id: doc.id, data: doc.data() });
+      });
+      console.log(items);
+      setRegions(items);
+    });
+  };
+
+  useEffect(() => {
+    getRegions();
+  }, []);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = {
+      name,
+      campusRegion,
+    };
+    createDorm(data);
+    setOpen(false);
+    setName("");
+    setCampusRegion("");
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -67,27 +112,50 @@ export default function CustomizedDialogs({ open, setOpen }) {
       <DialogTitle id="customized-dialog-title" onClose={handleClose}>
         New Dorm
       </DialogTitle>
-      <DialogContent dividers>
-        <Typography gutterBottom>
-          Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-          dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-          consectetur ac, vestibulum at eros.
-        </Typography>
-        <Typography gutterBottom>
-          Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-          Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-        </Typography>
-        <Typography gutterBottom>
-          Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
-          magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
-          ullamcorper nulla non metus auctor fringilla.
-        </Typography>
-      </DialogContent>
-      <DialogActions>
-        <Button autoFocus onClick={handleClose} color="primary">
-          Save Changes
-        </Button>
-      </DialogActions>
+      <Form onSubmit={handleSubmit}>
+        <FormContainer>
+          <TextFieldContainer>
+            <TextField
+              label="Dorm Name"
+              value={name}
+              variant="outlined"
+              onChange={(event) => {
+                setName(event.target.value);
+              }}
+              fullWidth
+            />
+          </TextFieldContainer>
+        </FormContainer>
+        <FormContainer>
+          <FormControl fullWidth>
+            <InputLabel id="region-select-label">Campus Region</InputLabel>
+            <Select
+              labelId="region-select-label"
+              value={campusRegion}
+              onChange={(event) => {
+                setCampusRegion(event.target.value);
+              }}
+              label="Age"
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {regions.map((region, index) => {
+                return (
+                  <MenuItem value={region.data.name} key={index}>
+                    {region.data.name}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        </FormContainer>
+        <DialogActions>
+          <Button autoFocus type="submit" color="primary">
+            Save Changes
+          </Button>
+        </DialogActions>
+      </Form>
     </Dialog>
   );
 }
