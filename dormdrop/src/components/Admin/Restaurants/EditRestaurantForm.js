@@ -81,12 +81,14 @@ const UploadImageInput = styled.input`
   display: none;
 `;
 
-export default function RestaurantForm({ open, setOpen }) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [campusRegion, setCampusRegion] = useState("");
+export default function EditRestaurantForm({ open, setOpen, restaurant }) {
+  const [name, setName] = useState(restaurant.data.name);
+  const [description, setDescription] = useState(restaurant.data.description);
+  const [campusRegion, setCampusRegion] = useState(
+    restaurant.data.campusRegion
+  );
   const [image, setImage] = useState(null);
-  const [imageSRC, setImageSRC] = useState(null);
+  const [imageSRC, setImageSRC] = useState(restaurant.data.imageURL);
   const [regions, setRegions] = useState([]);
 
   const regionRef = db.collection("campusRegions");
@@ -139,6 +141,7 @@ export default function RestaurantForm({ open, setOpen }) {
               campusRegion,
               description,
               imageURL: url,
+              imageReference: `images/${image.name}`,
             };
             createRestaurant(data);
             handleClose();
@@ -149,11 +152,6 @@ export default function RestaurantForm({ open, setOpen }) {
 
   const handleClose = () => {
     setOpen(false);
-    setName("");
-    setDescription("");
-    setCampusRegion("");
-    setImage(null);
-    setImageSRC(null);
   };
 
   return (

@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/storage";
 
 var config = {
   apiKey: "AIzaSyAFocmubzICv_lj5Jrm380Fjl4MDA_7nH4",
@@ -15,8 +16,10 @@ var config = {
 const app = !firebase.apps.length
   ? firebase.initializeApp(config)
   : firebase.app();
+
 export const auth = firebase.auth();
 export const db = firebase.firestore();
+export const storage = firebase.storage();
 
 // * ----------- Authentication with Google ----------- *
 
@@ -106,6 +109,34 @@ export const updateDorm = async (id, data) => {
     await dormRef.doc(id).update(data);
   } catch (error) {
     console.log("Error occurred updating dorm");
+  }
+};
+
+// * ----------- Create, Update, Delete Restaurants ------------ *
+
+const restaurantRef = db.collection("restaurants");
+
+export const createRestaurant = async (data) => {
+  try {
+    await restaurantRef.add(data);
+  } catch (error) {
+    console.log("Error occurred creating restaurant", error);
+  }
+};
+
+export const deleteRestaurant = async (id) => {
+  try {
+    await restaurantRef.doc(id).delete();
+  } catch (error) {
+    console.log("Error occurred deleting restaurant", error);
+  }
+};
+
+export const updateRestaurant = async (id, data) => {
+  try {
+    await restaurantRef.doc(id).update(data);
+  } catch (error) {
+    console.log("Error occurred updating restaurant");
   }
 };
 
