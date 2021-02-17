@@ -34,7 +34,6 @@ export const handleCreatingUserWithEmailAndPassword = async (
   try {
     await auth.createUserWithEmailAndPassword(email, password);
     console.log("user successfully created...");
-    // generateUserDocument(user);
   } catch (error) {
     console.log("Error signing up with email and password", error);
   }
@@ -45,31 +44,36 @@ export const handleSignInWithEmailAndPassword = async (email, password) => {
     await auth.signInWithEmailAndPassword(email, password);
     console.log("user signed in successfully");
   } catch (error) {
-    console.log("Error occurred while authenticating user");
+    console.log("Error authenticating user");
   }
 };
 
 // * ----- Campus Region ----- *
+
+const regionRef = db.collection("campusRegions");
+
 export const createCampusRegion = async (name) => {
-  const regionRef = db.collection("campusRegions");
   try {
-    await regionRef.add({
-      name,
-    });
-    console.log("new region added successfully");
+    await regionRef.add({ name });
   } catch (error) {
     console.log(error);
-    console.log("Error occurred creating campus region");
+    console.log("Error occurred creating campus region", error);
   }
 };
 
 export const deleteCampusRegion = async (id) => {
-  console.log("delete doc with id: " + id);
   try {
-    const res = await db.collection("campusRegions").doc(`${id}`).delete();
-    console.log("region deleted successfully");
+    await regionRef.doc(id).delete();
   } catch (error) {
-    console.log("error occurred while trying to delete campus regions");
+    console.log("Error occurred deleting campus regions", error);
+  }
+};
+
+export const updateCampusRegion = async (id, data) => {
+  try {
+    await regionRef.doc(id).update(data);
+  } catch (error) {
+    console.log("Error occurred updating campus region", error);
   }
 };
 

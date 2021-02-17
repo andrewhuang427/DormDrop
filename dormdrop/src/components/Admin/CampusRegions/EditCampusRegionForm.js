@@ -3,14 +3,13 @@ import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import styled from "styled-components";
-import { createCampusRegion } from "../../../firebase/firebase";
+import { updateCampusRegion } from "../../../firebase/firebase";
 
 const styles = (theme) => ({
   root: {
@@ -59,12 +58,14 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
-export default function CampusRegionForm({ open, setOpen }) {
-  const [name, setName] = useState("");
+export default function EditCampusRegionForm({ open, setOpen, region }) {
+  console.log(region);
+  const [name, setName] = useState(region.data.name);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    createCampusRegion(name);
+    const data = { name };
+    updateCampusRegion(region.id, data);
     setOpen(false);
   };
 
@@ -79,7 +80,7 @@ export default function CampusRegionForm({ open, setOpen }) {
       open={open}
     >
       <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-        New Campus Region
+        Edit Campus Region
       </DialogTitle>
       <Form onSubmit={handleSubmit}>
         <FormContainer>

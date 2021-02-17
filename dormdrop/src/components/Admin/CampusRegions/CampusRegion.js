@@ -39,7 +39,6 @@ const useStyles = makeStyles((theme) => ({
 function Dorm() {
   const classes = useStyles();
   const [modalOpen, setModalOpen] = useState(false);
-
   const toggleModal = () => {
     setModalOpen(!modalOpen);
   };
