@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -8,6 +8,9 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
+import styled from "styled-components";
+import { createCampusRegion } from "../../../firebase/firebase";
 
 const styles = (theme) => ({
   root: {
@@ -21,6 +24,15 @@ const styles = (theme) => ({
     color: theme.palette.grey[500],
   },
 });
+
+const FormContainer = styled.div`
+  padding: 20px;
+  min-width: 450px;
+`;
+
+const Form = styled.form``;
+
+const TextFieldContainer = styled.div``;
 
 const DialogTitle = withStyles(styles)((props) => {
   const { children, classes, onClose, ...other } = props;
@@ -40,12 +52,6 @@ const DialogTitle = withStyles(styles)((props) => {
   );
 });
 
-const DialogContent = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiDialogContent);
-
 const DialogActions = withStyles((theme) => ({
   root: {
     margin: 0,
@@ -54,6 +60,14 @@ const DialogActions = withStyles((theme) => ({
 }))(MuiDialogActions);
 
 export default function CustomizedDialogs({ open, setOpen }) {
+  const [name, setName] = useState("");
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    createCampusRegion(name);
+    setOpen(false);
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -65,29 +79,27 @@ export default function CustomizedDialogs({ open, setOpen }) {
       open={open}
     >
       <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-        New Restaurant
+        New Campus Region
       </DialogTitle>
-      <DialogContent dividers>
-        <Typography gutterBottom>
-          Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-          dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-          consectetur ac, vestibulum at eros.
-        </Typography>
-        <Typography gutterBottom>
-          Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-          Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-        </Typography>
-        <Typography gutterBottom>
-          Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
-          magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
-          ullamcorper nulla non metus auctor fringilla.
-        </Typography>
-      </DialogContent>
-      <DialogActions>
-        <Button autoFocus onClick={handleClose} color="primary">
-          Save Changes
-        </Button>
-      </DialogActions>
+      <Form onSubmit={handleSubmit}>
+        <FormContainer>
+          <TextFieldContainer>
+            <TextField
+              label="Region Name"
+              value={name}
+              onChange={(event) => {
+                setName(event.target.value);
+              }}
+              fullWidth
+            />
+          </TextFieldContainer>
+        </FormContainer>
+        <DialogActions>
+          <Button autoFocus type="submit" color="primary">
+            Save Changes
+          </Button>
+        </DialogActions>
+      </Form>
     </Dialog>
   );
 }

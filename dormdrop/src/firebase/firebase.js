@@ -12,10 +12,11 @@ var config = {
   measurementId: "G-ZMYXKQ84L5",
 };
 
-const app = firebase.initializeApp(config);
-
-export const auth = app.auth();
-export const firestore = app.firestore();
+const app = !firebase.apps.length
+  ? firebase.initializeApp(config)
+  : firebase.app();
+export const auth = firebase.auth();
+export const db = firebase.firestore();
 
 // * ----- Authentication with Google ----- *
 
@@ -26,30 +27,12 @@ export const signInWithGoogle = () => {
 
 // * ----- Email / Password Authentication ----- *
 
-const generateUserDocument = async (user) => {
-  if (!user) return;
-  const userRef = firestore.doc(`users/${user.uid}`);
-  const snapshot = await userRef.get();
-  if (!snapshot.exists) {
-    const { email, displayName, photoURL } = user;
-    try {
-      await userRef.set({
-        displayName,
-        email,
-        photoURL,
-      });
-    } catch (error) {
-      console.log("Error creating user document", error);
-    }
-  }
-};
-
 export const handleCreatingUserWithEmailAndPassword = async (
   email,
   password
 ) => {
   try {
-    const { user } = await auth.createUserWithEmailAndPassword(email, password);
+    await auth.createUserWithEmailAndPassword(email, password);
     console.log("user successfully created...");
     // generateUserDocument(user);
   } catch (error) {
@@ -63,6 +46,30 @@ export const handleSignInWithEmailAndPassword = async (email, password) => {
     console.log("user signed in successfully");
   } catch (error) {
     console.log("Error occurred while authenticating user");
+  }
+};
+
+// * ----- Campus Region ----- *
+export const createCampusRegion = async (name) => {
+  const regionRef = db.collection("campusRegions");
+  try {
+    await regionRef.add({
+      name,
+    });
+    console.log("new region added successfully");
+  } catch (error) {
+    console.log(error);
+    console.log("Error occurred creating campus region");
+  }
+};
+
+export const deleteCampusRegion = async (id) => {
+  console.log("delete doc with id: " + id);
+  try {
+    const res = await db.collection("campusRegions").doc(`${id}`).delete();
+    console.log("region deleted successfully");
+  } catch (error) {
+    console.log("error occurred while trying to delete campus regions");
   }
 };
 
