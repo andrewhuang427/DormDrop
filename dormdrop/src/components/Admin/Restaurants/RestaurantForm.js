@@ -139,6 +139,7 @@ export default function RestaurantForm({ open, setOpen }) {
               campusRegion,
               description,
               imageURL: url,
+              imageRef: `images/${image.name}`,
             };
             createRestaurant(data);
             handleClose();

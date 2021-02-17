@@ -11,7 +11,11 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Paper from "@material-ui/core/Paper";
-import { db, deleteRestaurant } from "../../../firebase/firebase";
+import {
+  db,
+  deleteRestaurant,
+  deleteImageAttachedToRestaurant,
+} from "../../../firebase/firebase";
 
 const useStyles = makeStyles({
   table: {
@@ -93,6 +97,7 @@ function Row({ restaurant }) {
           <IconButton
             onClick={() => {
               deleteRestaurant(restaurant.id);
+              deleteImageAttachedToRestaurant(restaurant.data.imageRef);
             }}
           >
             <DeleteIcon />

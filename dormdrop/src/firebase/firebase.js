@@ -132,6 +132,16 @@ export const deleteRestaurant = async (id) => {
   }
 };
 
+export const deleteImageAttachedToRestaurant = async (imageRef) => {
+  console.log(imageRef)
+  try {
+    const storageRef = storage.ref();
+    await storageRef.child(imageRef).delete();
+  } catch (error) {
+    console.log("Error occurred deleting restaurant's image");
+  }
+};
+
 export const updateRestaurant = async (id, data) => {
   try {
     await restaurantRef.doc(id).update(data);
