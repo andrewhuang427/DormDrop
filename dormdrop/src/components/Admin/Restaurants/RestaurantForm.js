@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
-import Button from "@material-ui/core/Button";
 import Modal from "@material-ui/core/Modal";
 import TextField from "@material-ui/core/TextField";
+import Input from "@material-ui/core/Input";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
+import FormHelperText from "@material-ui/core/FormHelperText";
 import Select from "@material-ui/core/Select";
+import IconButton from "@material-ui/core/IconButton";
+import AddIcon from "@material-ui/icons/Add";
+import RemoveIcon from "@material-ui/icons/Remove";
 import styled from "styled-components";
 import { db, storage, createRestaurant } from "../../../firebase/firebase";
 import { FiUpload } from "react-icons/fi";
@@ -14,7 +18,7 @@ const ModalContainer = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 10px;
+  border-radius: 5px;
   width: 1060px;
   height: 600px;
   background: white;
@@ -41,8 +45,14 @@ const Image = styled.img`
 
 const FormContainer = styled.div`
   width: 460px;
+  height: 100%;
+  overflow-y: scroll;
   padding: 20px;
 `;
+
+const FormHeadingContainer = styled.div``;
+
+const FormHeading = styled.h3``;
 
 const Form = styled.form``;
 
@@ -51,8 +61,21 @@ const TextFieldContainer = styled.div`
 `;
 
 const TextFieldLabel = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 `;
+
+const AddRestaurantContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const AddRestaurantHeading = styled.div`
+  padding-top: 10px;
+`;
+
+const AddIconContainer = styled.div``;
+
+const NewRestaurantContainer = styled.div``;
 
 const UploadContainer = styled.div`
   margin: 30px auto;
@@ -77,20 +100,52 @@ const IconSpan = styled.span`
   margin-left: 5px;
 `;
 
+const OrderFormPropertiesContainer = styled.div`
+  margin-top: 10px;
+`;
+
 const UploadImageInput = styled.input`
   display: none;
 `;
 
+const Button = styled.button`
+  border-radius: 20px;
+  width: 100%;
+  border: none;
+  display: flex;
+  background: #3ab44b;
+  color: white;
+  padding: 15px 30px;
+  margin-right: 10px;
+  text-decoration: none;
+  :hover {
+    cursor: pointer;
+    background: #3ab44bcc;
+  }
+`;
+
+const formFields = [
+  "Customer Name",
+  "Order Number",
+  "Include Drink",
+  "Utensils",
+  "Include Sauces",
+  "Additional Instructions",
+];
+
 export default function RestaurantForm({ open, setOpen }) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [restaurants, setRestaurants] = useState([]);
+  const [price, setPrice] = useState(0);
+  const [maxOrders, setMaxOrders] = useState(0);
+  const [instructions, setInstructions] = useState("");
   const [campusRegion, setCampusRegion] = useState("");
   const [image, setImage] = useState(null);
   const [imageSRC, setImageSRC] = useState(null);
   const [regions, setRegions] = useState([]);
-
+  const [formProperties, setFormProperties] = useState([]);
   const regionRef = db.collection("campusRegions");
-
+  
   const getRegions = () => {
     regionRef.onSnapshot((querySnapshot) => {
       let items = [];
@@ -135,9 +190,13 @@ export default function RestaurantForm({ open, setOpen }) {
           .then((url) => {
             console.log(url);
             const data = {
-              name,
+              displayName,
+              restaurants,
+              price,
+              maxOrders,
+              instructions,
               campusRegion,
-              description,
+              formProperties,
               imageURL: url,
               imageRef: `images/${image.name}`,
             };
@@ -150,11 +209,36 @@ export default function RestaurantForm({ open, setOpen }) {
 
   const handleClose = () => {
     setOpen(false);
-    setName("");
-    setDescription("");
     setCampusRegion("");
     setImage(null);
     setImageSRC(null);
+  };
+
+  const addRestaurant = () => {
+    setRestaurants([...restaurants, ""]);
+  };
+
+  const editRestaurant = (index, text) => {
+    let copy = [...restaurants];
+    if (index !== -1) {
+      copy[index] = text;
+    }
+    console.log(copy);
+    setRestaurants(copy);
+  };
+
+  const removeRestaurant = (index) => {
+    let copy = [...restaurants];
+    if (index !== -1) {
+      copy.splice(index, 1);
+    }
+    console.log(copy);
+    setRestaurants(copy);
+  };
+
+  const handleFormPropertyChange = (event) => {
+    const properties = event.target.value;
+    setFormProperties(properties);
   };
 
   return (
@@ -169,27 +253,76 @@ export default function RestaurantForm({ open, setOpen }) {
             <Image src={imageSRC} />
           </ImageContainer>
           <FormContainer>
+            <FormHeadingContainer>
+              <FormHeading>Add Delivery Option</FormHeading>
+            </FormHeadingContainer>
             <Form onSubmit={handleSubmit}>
               <TextFieldContainer>
-                <TextFieldLabel>Restaurant Name</TextFieldLabel>
+                <TextFieldLabel>Display Name</TextFieldLabel>
                 <TextField
-                  value={name}
+                  value={displayName}
                   variant="outlined"
                   onChange={(event) => {
-                    setName(event.target.value);
+                    setDisplayName(event.target.value);
+                  }}
+                  fullWidth
+                  helperText="Name that will be displayed as heading of card to users."
+                />
+              </TextFieldContainer>
+              <TextFieldContainer>
+                <AddRestaurantContainer>
+                  <AddRestaurantHeading>Restaurants</AddRestaurantHeading>
+                  <AddIconContainer>
+                    <IconButton onClick={addRestaurant}>
+                      <AddIcon style={{ fill: "green" }} />
+                    </IconButton>
+                  </AddIconContainer>
+                </AddRestaurantContainer>
+                <NewRestaurantContainer>
+                  {restaurants.map((restaurant, index) => {
+                    return (
+                      <Restaurant
+                        index={index}
+                        restaurant={restaurant}
+                        editRestaurant={editRestaurant}
+                        removeRestaurant={removeRestaurant}
+                      />
+                    );
+                  })}
+                </NewRestaurantContainer>
+              </TextFieldContainer>
+              <TextFieldContainer>
+                <TextFieldLabel>Instructions</TextFieldLabel>
+                <TextField
+                  value={instructions}
+                  variant="outlined"
+                  onChange={(event) => {
+                    setInstructions(event.target.value);
                   }}
                   fullWidth
                 />
               </TextFieldContainer>
               <TextFieldContainer>
-                <TextFieldLabel>Restaurant Description</TextFieldLabel>
+                <TextFieldLabel>Price</TextFieldLabel>
                 <TextField
-                  value={description}
+                  type="number"
+                  value={price}
                   variant="outlined"
                   onChange={(event) => {
-                    setDescription(event.target.value);
+                    setPrice(event.target.value);
                   }}
-                  fullWidth
+                />
+              </TextFieldContainer>
+              <TextFieldContainer>
+                <TextFieldLabel>Max Orders</TextFieldLabel>
+                <TextField
+                  type="number"
+                  helperText="Maximum number of orders that can be stacked."
+                  value={maxOrders}
+                  variant="outlined"
+                  onChange={(event) => {
+                    setMaxOrders(event.target.value);
+                  }}
                 />
               </TextFieldContainer>
               <TextFieldContainer>
@@ -206,15 +339,44 @@ export default function RestaurantForm({ open, setOpen }) {
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
-                    {regions.map((region, index) => {
+                    {regions.map((region) => {
                       return (
-                        <MenuItem value={region.data.name} key={index}>
+                        <MenuItem value={region.data.name} key={region.id}>
                           {region.data.name}
                         </MenuItem>
                       );
                     })}
                   </Select>
                 </FormControl>
+              </TextFieldContainer>
+              <TextFieldContainer>
+                <TextFieldLabel>Order Form Properties</TextFieldLabel>
+                <FormControl fullWidth>
+                  <Select
+                    multiple
+                    value={formProperties}
+                    onChange={handleFormPropertyChange}
+                    input={<Input />}
+                  >
+                    {formFields.map((field, index) => (
+                      <MenuItem key={index} value={field}>
+                        {field}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <FormHelperText>
+                    Make sure the order of the selected fields follows how you
+                    them to be displayed on website.
+                  </FormHelperText>
+                </FormControl>
+              </TextFieldContainer>
+              <TextFieldContainer>
+                Selected Fields
+                <OrderFormPropertiesContainer>
+                  {formProperties.map((field, index) => {
+                    return <FieldRow index={index} field={field} key={index} />;
+                  })}
+                </OrderFormPropertiesContainer>
               </TextFieldContainer>
               <TextFieldContainer>
                 <UploadContainer>
@@ -231,13 +393,65 @@ export default function RestaurantForm({ open, setOpen }) {
                   />
                 </UploadContainer>
               </TextFieldContainer>
-              <Button autoFocus type="submit" color="primary">
-                Save Changes
-              </Button>
+              <TextFieldContainer>
+                <Button type="submit">Save Restaurant</Button>
+              </TextFieldContainer>
             </Form>
           </FormContainer>
         </ContentWrapper>
       </ModalContainer>
     </Modal>
+  );
+}
+
+const OrderFormFieldContainer = styled.div`
+  margin-bottom: 10px;
+`;
+
+const FormFieldNameContainer = styled.div``;
+
+function FieldRow({ index, field }) {
+  return (
+    <OrderFormFieldContainer>
+      <FormFieldNameContainer>
+        {index + 1}. {field}
+      </FormFieldNameContainer>
+    </OrderFormFieldContainer>
+  );
+}
+
+const RestaurantContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+`;
+
+const RemoveRestaurantButtonContainer = styled.div``;
+
+function Restaurant({ index, restaurant, editRestaurant, removeRestaurant }) {
+  const handleChange = (event) => {
+    editRestaurant(index, event.target.value);
+  };
+
+  const handleDelete = () => {
+    removeRestaurant(index);
+  };
+  return (
+    <RestaurantContainer>
+      <div>
+        <TextField
+          variant="outlined"
+          placeholder="Restaurant Name"
+          value={restaurant}
+          onChange={handleChange}
+          helperText={`Restaurant #${index + 1}`}
+        />
+      </div>
+      <RemoveRestaurantButtonContainer>
+        <IconButton onClick={handleDelete}>
+          <RemoveIcon style={{ fill: "red" }} />
+        </IconButton>
+      </RemoveRestaurantButtonContainer>
+    </RestaurantContainer>
   );
 }

@@ -61,7 +61,8 @@ export default function BasicTable() {
         <TableHead>
           <TableRow>
             <TableCell>Restaurant</TableCell>
-            <TableCell align="right">Description</TableCell>
+            <TableCell align="right">Price</TableCell>
+            <TableCell align="right">Max Orders</TableCell>
             <TableCell align="right">Campus Region</TableCell>
             <TableCell align="right">Edit | Delete</TableCell>
           </TableRow>
@@ -82,9 +83,12 @@ function Row({ restaurant }) {
     <Fragment>
       <TableRow>
         <TableCell component="th" scope="row">
-          {restaurant.data.name}
+          {restaurant.data.displayName}
         </TableCell>
-        <TableCell align="right">{restaurant.data.description}</TableCell>
+        <TableCell align="right">
+          {"$ " + Number(restaurant.data.price).toFixed(2)}
+        </TableCell>
+        <TableCell align="right">{restaurant.data.maxOrders + " Orders / Delivery"}</TableCell>
         <TableCell align="right">{restaurant.data.campusRegion}</TableCell>
         <TableCell align="right">
           <IconButton>

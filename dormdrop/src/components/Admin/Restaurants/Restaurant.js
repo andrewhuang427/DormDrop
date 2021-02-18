@@ -50,7 +50,7 @@ function Restaurant() {
         <Container>
           <SectionHeadingContainer>
             <HeadingContainer>
-              <Heading>Available Restaurants</Heading>
+              <Heading>Available Delivery Options</Heading>
             </HeadingContainer>
             <CreateEntryButtonContainer>
               <Button
@@ -58,7 +58,7 @@ function Restaurant() {
                 className={classes.button}
                 startIcon={<AddIcon />}
               >
-                Add Restaurant
+                Add Delivery Option
               </Button>
             </CreateEntryButtonContainer>
           </SectionHeadingContainer>
