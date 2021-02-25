@@ -75,14 +75,8 @@ export default function CampusRegionForm({ open, setOpen }) {
   };
 
   return (
-    <Dialog
-      onClose={handleClose}
-      aria-labelledby="customized-dialog-title"
-      open={open}
-    >
-      <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-        New Campus Region
-      </DialogTitle>
+    <Dialog onClose={handleClose} open={open}>
+      <DialogTitle onClose={handleClose}>New Campus Region</DialogTitle>
       <Form onSubmit={handleSubmit}>
         <FormContainer>
           <TextFieldContainer>

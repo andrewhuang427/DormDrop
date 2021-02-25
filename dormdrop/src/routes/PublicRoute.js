@@ -11,7 +11,7 @@ function PublicRoute({ component: Component, restricted, ...rest }) {
         {...rest}
         render={(props) =>
           user !== null && restricted ? (
-            <Redirect to="/protected" />
+            <Redirect to="/admin/dashboard" />
           ) : (
             <Component {...props} />
           )

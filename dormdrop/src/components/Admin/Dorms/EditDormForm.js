@@ -99,14 +99,8 @@ export default function EditDormForm({ open, setOpen, dorm }) {
   };
 
   return (
-    <Dialog
-      onClose={handleClose}
-      aria-labelledby="customized-dialog-title"
-      open={open}
-    >
-      <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-        New Dorm
-      </DialogTitle>
+    <Dialog onClose={handleClose} open={open}>
+      <DialogTitle onClose={handleClose}>New Dorm</DialogTitle>
       <Form onSubmit={handleSubmit}>
         <FormContainer>
           <TextFieldContainer>

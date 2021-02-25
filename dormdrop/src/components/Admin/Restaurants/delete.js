@@ -9,14 +9,8 @@ import Select from "@material-ui/core/Select";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
-import BeatLoader from "react-spinners/BeatLoader";
 import styled from "styled-components";
 import { db, storage, updateRestaurant } from "../../../firebase/firebase";
-import {
-  integerToMilitaryTime,
-  timeToInteger,
-  validateRestaurantForm,
-} from "../../../utils/index";
 import { FiUpload } from "react-icons/fi";
 
 const ModalContainer = styled.div`
@@ -145,22 +139,20 @@ export default function RestaurantForm({ open, setOpen, restaurant }) {
   const [restaurants, setRestaurants] = useState(restaurant.data.restaurants);
   const [price, setPrice] = useState(restaurant.data.price);
   const [maxOrders, setMaxOrders] = useState(restaurant.data.maxOrders);
-  const [timeSlots, setTimeSlots] = useState(restaurant.data.timeSlots);
   const [instructions, setInstructions] = useState(
     restaurant.data.instructions
   );
   const [campusRegion, setCampusRegion] = useState(
     restaurant.data.campusRegion
   );
+  const [image, setImage] = useState(null);
+  const [imageSRC, setImageSRC] = useState(restaurant.data.imageURL);
   const [formProperties, setFormProperties] = useState(
     restaurant.data.formProperties
   );
-  const [image, setImage] = useState(null);
-  const [imageSRC, setImageSRC] = useState(restaurant.data.imageURL);
   const [regions, setRegions] = useState([]);
+
   const regionRef = db.collection("campusRegions");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const getRegions = () => {
     regionRef.onSnapshot((querySnapshot) => {
@@ -170,6 +162,8 @@ export default function RestaurantForm({ open, setOpen, restaurant }) {
       });
       console.log(items);
       setRegions(items);
+      setCampusRegion(restaurant.data.campusRegion);
+      setImageSRC(restaurant.data.imageURL);
     });
   };
 
@@ -188,24 +182,7 @@ export default function RestaurantForm({ open, setOpen, restaurant }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setLoading(true);
-    const data = {
-      displayName,
-      restaurants,
-      price: Number(price),
-      maxOrders: Number(maxOrders),
-      timeSlots,
-      instructions,
-      campusRegion,
-      formProperties,
-    };
-    if (image === null && imageSRC === null) {
-      setError("Must include image");
-      setLoading(false);
-    } else if (validateRestaurantForm(data) !== "") {
-      setError(validateRestaurantForm(data));
-      setLoading(false);
-    } else {
+    if (image !== null) {
       const uploadTask = storage.ref(`images/${image.name}`).put(image);
       uploadTask.on(
         "state_changed",
@@ -224,35 +201,45 @@ export default function RestaurantForm({ open, setOpen, restaurant }) {
             .getDownloadURL()
             .then((url) => {
               console.log(url);
-              data.imageURL = url;
-              data.imageRef = `images/${image.name}`;
+              const data = {
+                displayName,
+                restaurants,
+                price,
+                maxOrders,
+                instructions,
+                campusRegion,
+                formProperties,
+                imageURL: url,
+                imageRef: `images/${image.name}`,
+              };
               updateRestaurant(restaurant.id, data);
-              setLoading(false);
               handleClose();
             });
         }
       );
+    } else {
+      const data = {
+        displayName,
+        restaurants,
+        price: Number(price),
+        maxOrders: Number(maxOrders),
+        instructions,
+        campusRegion,
+        formProperties,
+        imageURL: restaurant.data.imageURL,
+        imageRef: restaurant.data.imageRef,
+      };
+      updateRestaurant(restaurant.id, data);
+      handleClose();
     }
   };
 
   const handleClose = () => {
-    setDisplayName("");
-    setRestaurants([]);
-    setPrice(0);
-    setMaxOrders(0);
-    setTimeSlots([]);
-    setInstructions("");
+    setOpen(false);
     setCampusRegion("");
     setImage(null);
     setImageSRC(null);
-    setRegions([]);
-    setFormProperties([]);
-    setOpen(false);
-    setLoading(false);
-    setError("");
   };
-
-  // Restaurant Methods
 
   const addRestaurant = () => {
     setRestaurants([...restaurants, ""]);
@@ -260,36 +247,20 @@ export default function RestaurantForm({ open, setOpen, restaurant }) {
 
   const editRestaurant = (index, text) => {
     let copy = [...restaurants];
-    copy[index] = text;
+    if (index !== -1) {
+      copy[index] = text;
+    }
     console.log(copy);
     setRestaurants(copy);
   };
 
   const removeRestaurant = (index) => {
     let copy = [...restaurants];
-    copy.splice(index, 1);
+    if (index !== -1) {
+      copy.splice(index, 1);
+    }
     console.log(copy);
     setRestaurants(copy);
-  };
-
-  // Time Slot Methods
-
-  const addTimeSlot = () => {
-    setTimeSlots([...timeSlots, { open: 0, close: 0 }]);
-  };
-
-  const editTimeSlot = (index, editedSlot) => {
-    let copy = [...timeSlots];
-    copy[index] = editedSlot;
-    console.log(copy);
-    setTimeSlots(copy);
-  };
-
-  const removeTimeSlot = (index) => {
-    let copy = [...timeSlots];
-    copy.splice(index, 1);
-    console.log(copy);
-    setTimeSlots(copy);
   };
 
   const handleFormPropertyChange = (event) => {
@@ -306,7 +277,7 @@ export default function RestaurantForm({ open, setOpen, restaurant }) {
           </ImageContainer>
           <FormContainer>
             <FormHeadingContainer>
-              <FormHeading>Add Delivery Option</FormHeading>
+              <FormHeading>Edit Delivery Option</FormHeading>
             </FormHeadingContainer>
             <Form onSubmit={handleSubmit}>
               <TextFieldContainer>
@@ -334,7 +305,6 @@ export default function RestaurantForm({ open, setOpen, restaurant }) {
                   {restaurants.map((restaurant, index) => {
                     return (
                       <Restaurant
-                        key={index}
                         index={index}
                         restaurant={restaurant}
                         editRestaurant={editRestaurant}
@@ -347,7 +317,6 @@ export default function RestaurantForm({ open, setOpen, restaurant }) {
               <TextFieldContainer>
                 <TextFieldLabel>Instructions</TextFieldLabel>
                 <TextField
-                  multiline
                   value={instructions}
                   variant="outlined"
                   onChange={(event) => {
@@ -380,39 +349,13 @@ export default function RestaurantForm({ open, setOpen, restaurant }) {
                 />
               </TextFieldContainer>
               <TextFieldContainer>
-                <AddRestaurantContainer>
-                  <AddRestaurantHeading>Time Slots</AddRestaurantHeading>
-                  <AddIconContainer>
-                    <IconButton onClick={addTimeSlot}>
-                      <AddIcon style={{ fill: "green" }} />
-                    </IconButton>
-                  </AddIconContainer>
-                </AddRestaurantContainer>
-                <NewRestaurantContainer>
-                  {timeSlots.map((timeSlot, index) => {
-                    console.log(timeSlot);
-                    return (
-                      <TimeSlot
-                        key={index}
-                        index={index}
-                        timeSlot={timeSlot}
-                        editTimeSlot={editTimeSlot}
-                        removeTimeSlot={removeTimeSlot}
-                      />
-                    );
-                  })}
-                </NewRestaurantContainer>
-              </TextFieldContainer>
-              <TextFieldContainer>
                 <TextFieldLabel>Campus Region</TextFieldLabel>
                 <FormControl fullWidth>
                   <Select
-                    labelId="region-select-label"
                     value={campusRegion}
                     onChange={(event) => {
                       setCampusRegion(event.target.value);
                     }}
-                    label="Age"
                   >
                     <MenuItem value="">
                       <em>None</em>
@@ -471,24 +414,8 @@ export default function RestaurantForm({ open, setOpen, restaurant }) {
                   />
                 </UploadContainer>
               </TextFieldContainer>
-              {error !== "" ? (
-                <TextFieldContainer>
-                  <ErrorContainer>{error}</ErrorContainer>
-                </TextFieldContainer>
-              ) : (
-                ""
-              )}
               <TextFieldContainer>
-                <Button type="submit">
-                  Save Restaurant
-                  {loading ? (
-                    <LoadingContainer>
-                      <BeatLoader size={10} margin={2} color={"white"} />
-                    </LoadingContainer>
-                  ) : (
-                    ""
-                  )}
-                </Button>
+                <Button type="submit">Save Restaurant</Button>
               </TextFieldContainer>
             </Form>
           </FormContainer>
@@ -497,14 +424,6 @@ export default function RestaurantForm({ open, setOpen, restaurant }) {
     </Modal>
   );
 }
-
-const ErrorContainer = styled.div`
-  color: red;
-`;
-
-const LoadingContainer = styled.span`
-  margin-left: 20px;
-`;
 
 const OrderFormFieldContainer = styled.div`
   margin-bottom: 10px;
@@ -555,92 +474,5 @@ function Restaurant({ index, restaurant, editRestaurant, removeRestaurant }) {
         </IconButton>
       </RemoveRestaurantButtonContainer>
     </RestaurantContainer>
-  );
-}
-
-const TimeSlotContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-`;
-
-const InputContainer = styled.div`
-  display: flex;
-`;
-
-const OpenTimeContainer = styled.div`
-  margin-right: 10px;
-`;
-const CloseTimeContainer = styled.div``;
-
-const RemoveTimeSlotContainer = styled.div``;
-
-function TimeSlot({ index, timeSlot, editTimeSlot, removeTimeSlot }) {
-  const [open, setOpen] = useState(timeSlot.open);
-  const [close, setClose] = useState(timeSlot.close);
-
-  const handleDelete = () => {
-    removeTimeSlot(index);
-  };
-
-  const handleOpenTimeChange = (event) => {
-    const integer = timeToInteger(event.target.value);
-    setOpen(integer);
-  };
-
-  const handleCloseTimeChange = (event) => {
-    const integer = timeToInteger(event.target.value);
-    setClose(integer);
-  };
-
-  useEffect(() => {
-    const newHours = {
-      open,
-      close,
-    };
-    console.log(newHours);
-    editTimeSlot(index, newHours);
-  }, [open, close]);
-
-  return (
-    <TimeSlotContainer>
-      <InputContainer>
-        <OpenTimeContainer>
-          <TextField
-            label="Open Time"
-            type="time"
-            variant="outlined"
-            value={integerToMilitaryTime(timeSlot.open)}
-            onChange={handleOpenTimeChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            inputProps={{
-              step: 300,
-            }}
-          />
-        </OpenTimeContainer>
-        <CloseTimeContainer>
-          <TextField
-            label="Close Time"
-            type="time"
-            variant="outlined"
-            value={integerToMilitaryTime(timeSlot.close)}
-            onChange={handleCloseTimeChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            inputProps={{
-              step: 300,
-            }}
-          />
-        </CloseTimeContainer>
-      </InputContainer>
-      <RemoveTimeSlotContainer>
-        <IconButton onClick={handleDelete}>
-          <RemoveIcon style={{ fill: "red" }} />
-        </IconButton>
-      </RemoveTimeSlotContainer>
-    </TimeSlotContainer>
   );
 }

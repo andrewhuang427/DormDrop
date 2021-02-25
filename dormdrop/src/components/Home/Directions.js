@@ -82,8 +82,8 @@ export default function HowItWorks() {
             </CardIcon>
             <CardHeader>Register</CardHeader>
             <CardDescription>
-              Sign up using your WUSTL email address and fill in what building
-              you live in so we know where to deliver your meals.
+              Sign up using your campus email address and add your delivery
+              location.
             </CardDescription>
           </Card>
           <Card data-aos="fade-down" data-aos-delay="100" data-aos-once="true">
@@ -93,8 +93,8 @@ export default function HowItWorks() {
             <CardHeader>Place Order</CardHeader>
             <CardDescription>
               Place your order by filling out the order form. Make note of all
-              the food that you ordered in the form so we know which box is
-              yours.
+              the meals that you ordered in the form so we know which order to
+              pick up.
             </CardDescription>
           </Card>
           <Card data-aos="fade-down" data-aos-delay="200" data-aos-once="true">
@@ -103,8 +103,8 @@ export default function HowItWorks() {
             </CardIcon>
             <CardHeader>Deliver</CardHeader>
             <CardDescription>
-              Wait for your order to be prepared, and we will deliver it as soon
-              as we receive a notification that it is done.
+              Wait for your order to be prepared. We will deliver it as soon as
+              we receive a notification that it is done.
             </CardDescription>
           </Card>
           <Card data-aos="fade-down" data-aos-delay="300" data-aos-once="true">
@@ -113,9 +113,9 @@ export default function HowItWorks() {
             </CardIcon>
             <CardHeader>Accept</CardHeader>
             <CardDescription>
-              After we pick up your order, we will deliver it directly to your
-              room to your specifications. Once the delivery is complete, you
-              will receive a notification to your phone.
+              After we pick up your order, we will deliver it directly to the
+              location which you specify. Once the delivery is complete, you
+              will receive a notification.
             </CardDescription>
           </Card>
         </Grid>

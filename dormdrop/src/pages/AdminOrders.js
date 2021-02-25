@@ -14,12 +14,11 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import AppsIcon from "@material-ui/icons/Apps";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import Restaurant from "../components/Admin/Restaurants/Restaurant";
-import Dorm from "../components/Admin/Dorms/Dorm";
-import CampusRegion from "../components/Admin/CampusRegions/CampusRegion";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import HomeIcon from "@material-ui/icons/Home";
 import Logo from "../images/logo.png";
-import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { signOut } from "../firebase/firebase";
 import { sidebarItems } from "../components/Admin/SidebarItems";
@@ -89,11 +88,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SectionContainer = styled.div`
-  margin-bottom: 50px;
-`;
-
-export default function PersistentDrawerLeft() {
+export default function AdminOrders() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
@@ -183,15 +178,7 @@ export default function PersistentDrawerLeft() {
         })}
       >
         <div className={classes.drawerHeader} />
-        <SectionContainer>
-          <Restaurant />
-        </SectionContainer>
-        <SectionContainer>
-          <CampusRegion />
-        </SectionContainer>
-        <SectionContainer>
-          <Dorm />
-        </SectionContainer>
+        Orders go here
       </main>
     </div>
   );
