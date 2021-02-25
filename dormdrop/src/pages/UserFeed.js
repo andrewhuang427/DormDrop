@@ -1,7 +1,12 @@
 import React from "react";
+import FeedNavbar from "../components/Navigation/FeedNavbar";
 
 function UserFeed() {
-  return <div>User Feed</div>;
+  return (
+    <>
+      <FeedNavbar />
+    </>
+  );
 }
 
 export default UserFeed;

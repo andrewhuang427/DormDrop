@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import DormDropLogo from "../../images/logo.png";
-import { Link } from "react-router-dom";
 import { debounce } from "@material-ui/core";
 
 const Nav = styled.div`
