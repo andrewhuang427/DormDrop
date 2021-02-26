@@ -112,7 +112,7 @@ export const updateDorm = async (id, data) => {
   }
 };
 
-// * ----------- Create, Update, Delete Restaurants ------------ *
+// * ----------- Create, Update, Delete Delivery Options ------------ *
 
 const restaurantRef = db.collection("restaurants");
 
@@ -133,7 +133,7 @@ export const deleteRestaurant = async (id) => {
 };
 
 export const deleteImageAttachedToRestaurant = async (imageRef) => {
-  console.log(imageRef)
+  console.log(imageRef);
   try {
     const storageRef = storage.ref();
     await storageRef.child(imageRef).delete();

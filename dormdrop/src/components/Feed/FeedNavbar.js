@@ -4,6 +4,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import CloseIcon from "@material-ui/icons/Close";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import DormDropLogo from "../../images/logo.png";
@@ -17,6 +18,13 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   navbar: { background: "white" },
+  toolbar: {
+    width: 1000,
+    display: "flex",
+    justifyContent: "space-between",
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
   logo: {
     height: 60,
     objectFit: "contain",
@@ -32,11 +40,12 @@ const useStyles = makeStyles((theme) => ({
 const LogoContainer = styled.div``;
 
 const ProfileIconContainer = styled.div`
-  color: green;
+  color: grey;
 `;
 
 const Placeholder = styled.div`
   width: 350px;
+  color: black;
 `;
 
 export default function FeedNavbar() {
@@ -63,9 +72,9 @@ export default function FeedNavbar() {
   };
 
   return (
-    <div className={classes.root} onClick={toggleDrawer}>
-      <AppBar position="static" className={classes.navbar}>
-        <Toolbar>
+    <div className={classes.root}>
+      <AppBar position="fixed" className={classes.navbar}>
+        <Toolbar className={classes.toolbar}>
           <LogoContainer className={classes.title}>
             <img
               src={DormDropLogo}
@@ -113,7 +122,11 @@ export default function FeedNavbar() {
         </Toolbar>
       </AppBar>
       <Drawer anchor={"right"} open={drawerOpen} className={classes.drawer}>
-        <Placeholder />
+        <Placeholder style={{ padding: 10 }}>
+          <IconButton onClick={toggleDrawer}>
+            <CloseIcon />
+          </IconButton>
+        </Placeholder>
       </Drawer>
     </div>
   );
