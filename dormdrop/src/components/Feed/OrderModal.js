@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Modal from "@material-ui/core/Modal";
+import Button from "@material-ui/core/Button";
+import Divider from "@material-ui/core/Divider";
 import FormField from "./FormField";
 import styled from "styled-components";
 
@@ -45,15 +47,21 @@ const FormHeadingContainer = styled.div``;
 
 const FormHeading = styled.h3``;
 
-const Instructions = styled.div``;
+const Instructions = styled.div`
+  margin: 30px auto;
+`;
 
 const Form = styled.form``;
 
 const FormFieldContainer = styled.div`
-  margin: 10px;
+  margin: 10px auto;
 `;
 
-const Button = styled.button`
+const DividerContainer = styled.div`
+  margin: 30px auto;
+`;
+
+const FullWidthButton = styled.button`
   border-radius: 20px;
   width: 100%;
   border: none;
@@ -69,8 +77,41 @@ const Button = styled.button`
   }
 `;
 
-export default function RestaurantForm({ Details, open, setOpen }) {
-  const [orders, setOrders] = useState([{}]);
+const orderSchema = (formProperties) => {
+  let object = {};
+  for (let i = 0; i < formProperties.length; ++i) {
+    let property = formProperties[i];
+    switch (property) {
+      case "Order Number":
+        object.orderNumber = "";
+        break;
+      case "Customer Name":
+        object.name = "";
+        break;
+      case "Include Drink":
+        object.includeDrink = false;
+        object.drink = "";
+        break;
+      case "Utensils":
+        object.includeUtensils = false;
+        break;
+      case "Include Sauces":
+        object.includeSauces = false;
+        object.sauces = "";
+        break;
+      case "Additional Instructions":
+        object.additionalInstructions = "";
+        break;
+      default:
+    }
+  }
+  return object;
+};
+
+export default function RestaurantForm({ Details, open, setOpen, addToCart }) {
+  const [orders, setOrders] = useState([
+    orderSchema(Details.data.formProperties),
+  ]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -81,17 +122,33 @@ export default function RestaurantForm({ Details, open, setOpen }) {
   };
 
   const addOrder = () => {
-    const newOrders = [...orders, {}];
+    let newOrder = orderSchema(Details.data.formProperties);
+    const newOrders = [...orders, newOrder];
     setOrders(newOrders);
   };
 
-  const removeOrder = (index) => {};
+  const removeOrder = (index) => {
+    let copy = [...orders];
+    copy.splice(index, 1);
+    console.log(copy);
+    setOrders(copy);
+  };
 
   const editOrder = (editedOrder, index) => {
     const copy = [...orders];
     copy[index] = editedOrder;
     console.log(copy);
     setOrders(copy);
+  };
+
+  const handleAddToCart = (event) => {
+    console.log(orders);
+    const order = {
+      price: Details.data.price,
+      restaurant: Details.data.displayName,
+      orderDetails: orders,
+    };
+    addToCart(order);
   };
 
   return (
@@ -105,37 +162,60 @@ export default function RestaurantForm({ Details, open, setOpen }) {
             <FormHeadingContainer>
               <FormHeading>{Details.data.displayName}</FormHeading>
             </FormHeadingContainer>
-            <Instructions>{Details.data.instructions}</Instructions>
+            <Instructions>
+              <b>Instructions:</b> {Details.data.instructions}
+            </Instructions>
             <Form onSubmit={handleSubmit}>
               {orders.map((order, index) => {
                 return (
-                  <div key={index}>
-                    <FormFieldContainer>Order {index + 1}</FormFieldContainer>
-                    {Details.data.formProperties.map((field, fieldIndex) => {
-                      return (
-                        <FormFieldContainer key={fieldIndex}>
-                          <FormField
-                            name={field}
-                            order={order}
-                            editOrder={editOrder}
-                            orderIndex={index}
-                          />
-                        </FormFieldContainer>
-                      );
-                    })}
-                  </div>
+                  <>
+                    <div key={index}>
+                      <FormFieldContainer>Order {index + 1}</FormFieldContainer>
+                      {Details.data.formProperties.map((field, fieldIndex) => {
+                        return (
+                          <FormFieldContainer key={fieldIndex}>
+                            <FormField
+                              name={field}
+                              order={order}
+                              editOrder={editOrder}
+                              orderIndex={index}
+                            />
+                          </FormFieldContainer>
+                        );
+                      })}
+                      {orders.length > 1 ? (
+                        <Button
+                          variant="outlined"
+                          onClick={() => {
+                            removeOrder(index);
+                          }}
+                        >
+                          Remove
+                        </Button>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    <DividerContainer>
+                      <Divider />
+                    </DividerContainer>
+                  </>
                 );
               })}
             </Form>
             {orders.length < Details.data.maxOrders ? (
               <FormFieldContainer>
-                <Button onClick={addOrder}>Add Additional Order</Button>
+                <FullWidthButton onClick={addOrder}>
+                  Add Additional Order
+                </FullWidthButton>
               </FormFieldContainer>
             ) : (
               ""
             )}
             <FormFieldContainer>
-              <Button>Add To Cart</Button>
+              <FullWidthButton onClick={handleAddToCart}>
+                Add To Cart
+              </FullWidthButton>
             </FormFieldContainer>
           </FormContainer>
         </ContentWrapper>

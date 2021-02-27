@@ -31,16 +31,18 @@ const RestaurantDetailsContainer = styled.div`
   flex-grow: 1;
 `;
 
-const NameContainer = styled.div`
+const NameContainer = styled.h3`
   margin-top: 0;
   margin-bottom: 0;
 `;
 
 const Price = styled.div``;
 
-const MaxOrder = styled.div``;
+const MaxOrder = styled.div`
+  margin: 10px auto;
+`;
 
-function OptionCard({ Details }) {
+function OptionCard({ Details, addToCart }) {
   const [modalOpen, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -73,14 +75,22 @@ function OptionCard({ Details }) {
             <CardBottom>
               <RestaurantDetailsContainer>
                 <NameContainer>{Details.data.displayName}</NameContainer>
+                <MaxOrder>
+                  Order by yourself or with friends and stack up to{" "}
+                  {Details.data.maxOrders} orders
+                </MaxOrder>
                 <Price>$ {Number(Details.data.price).toFixed(2)}</Price>
-                <MaxOrder>Stack up to {Details.data.maxOrders} orders</MaxOrder>
               </RestaurantDetailsContainer>
             </CardBottom>
           </>
         )}
       </Card>
-      <OrderModal open={modalOpen} setOpen={setOpen} Details={Details} />
+      <OrderModal
+        open={modalOpen}
+        setOpen={setOpen}
+        Details={Details}
+        addToCart={addToCart}
+      />
     </>
   );
 }

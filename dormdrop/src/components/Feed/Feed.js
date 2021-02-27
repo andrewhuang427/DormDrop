@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import Divider from "@material-ui/core/Divider"
+import Divider from "@material-ui/core/Divider";
 import OptionCard from "./OptionCard";
 import styled from "styled-components";
 import { db } from "../../firebase/firebase";
@@ -37,7 +37,7 @@ const SectionSubheading = styled.div`
   color: #8d8d8d;
 `;
 
-export default function Feed() {
+export default function Feed({ addToCart }) {
   const classes = useStyles();
   const [deliverOptions, setDeliveryOptions] = useState([]);
 
@@ -72,8 +72,8 @@ export default function Feed() {
         {deliverOptions.map((option, index) => {
           console.log(option);
           return (
-            <Grid item xs={12} sm={4}>
-              <OptionCard key={index} Details={option} />
+            <Grid key={index} item xs={12} sm={4}>
+              <OptionCard Details={option} addToCart={addToCart} />
             </Grid>
           );
         })}
