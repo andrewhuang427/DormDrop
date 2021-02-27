@@ -10,7 +10,7 @@ export const integerToMilitaryTime = (time) => {
   return hours + ":" + minutes;
 };
 
-export const integerToRegularTime = (time) => {
+export const integerToTime = (time) => {
   let extension = "AM";
   let hours = Math.floor(Number(time) / 60);
   let minutes = time - hours * 60;
@@ -43,7 +43,6 @@ export const validateRestaurantForm = (data) => {
     maxOrders,
     timeSlots,
     instructions,
-    campusRegion,
     formProperties,
   } = data;
 
@@ -59,11 +58,44 @@ export const validateRestaurantForm = (data) => {
     return "Must include at least 1 time slot";
   } else if (instructions === "") {
     return "Cannot leave instructions blank";
-  } else if (campusRegion === "") {
-    return "Must include campus region";
   } else if (formProperties.length === "") {
     return "Must include form properties";
   } else {
     return "";
   }
+};
+
+export const sortOptions = (options) => {
+  const now = new Date();
+  const arr = now.toTimeString().split(":");
+  const timeAsInteger = Number(arr[0]) * 60 + Number(arr[1]);
+
+  let object = {
+    active: [],
+    inactive: [],
+  };
+
+  for (let i = 0; i < options.length; ++i) {
+    const option = options[i];
+    console.log(option);
+    const hoursArray = option.data.timeSlots;
+    for (let j = 0; j < hoursArray.length; ++j) {
+      const { open, close } = hoursArray[j];
+      console.log("open: " + open + "   " + " close: " + close);
+      if (open < close && timeAsInteger > open && timeAsInteger < close) {
+        object.active.push(option);
+        // typical period starting and ending on the same day
+      } else if (
+        close < open &&
+        (timeAsInteger > open || timeAsInteger < close)
+      ) {
+        object.active.push(option);
+      }
+    }
+    if (!object.active.includes(option)) {
+      object.inactive.push(option);
+    }
+  }
+  console.log(object);
+  return object;
 };

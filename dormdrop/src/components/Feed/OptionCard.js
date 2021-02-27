@@ -3,46 +3,110 @@ import Box from "@material-ui/core/Box";
 import Skeleton from "@material-ui/lab/Skeleton";
 import styled from "styled-components";
 import OrderModal from "./OrderModal";
+import { integerToTime } from "../../utils/index";
 
 const Card = styled.div`
   cursor: pointer;
   width: auto;
-  height: 100%;
-  padding: 10px;
+  height: auto;
+  padding: 15px;
+  overflow: hidden;
+  &:hover {
+    background-color: #00000010;
+  }
 `;
 
 const ImageContainer = styled.div`
-  width: auto;
+  position: relative;
+  width: 100%;
+  height: 200px;
   margin-bottom: 10px;
+  border-radius: 10px;
+  overflow: hidden;
 `;
 
 const Image = styled.img`
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
+`;
+
+const Overlay = styled.div`
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+`;
+
+const OverlayText = styled.div`
+  position: relative;
+  top: 50%;
+  left: 50%;
+  width: 80%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  font-weight: 600;
 `;
 
 const CardBottom = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: 5px;
 `;
 
 const RestaurantDetailsContainer = styled.div`
   flex-grow: 1;
 `;
 
-const NameContainer = styled.h3`
-  margin-top: 0;
-  margin-bottom: 0;
+const TitleContainer = styled.div``;
+
+const Price = styled.div`
+  display: inline-block;
+  padding: 5px;
+  color: white;
+  margin-right: 10px;
+  border-radius: 10px;
+  background-color: #3ab44b;
+  font-weight: 600;
 `;
 
-const Price = styled.div``;
+const NameContainer = styled.h3`
+  display: inline-block;
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-right: 5px;
+  font-size: 15px;
+`;
+
+const Hours = styled.div`
+  font-weight: 600;
+  margin: 10px auto;
+  font-size: 13px;
+`;
 
 const MaxOrder = styled.div`
   margin: 10px auto;
+  font-weight: 500;
+  font-size: 13px;
 `;
 
-function OptionCard({ Details, addToCart }) {
+const availableTimesToString = (times) => {
+  let string = "";
+  for (let i = 0; i < times.length; ++i) {
+    const { open, close } = times[i];
+    string += integerToTime(open) + "-" + integerToTime(close);
+    if (i !== times.length - 1) {
+      string += ", ";
+    }
+  }
+  return string;
+};
+
+function OptionCard({ Details, addToCart, active }) {
   const [modalOpen, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -71,15 +135,31 @@ function OptionCard({ Details, addToCart }) {
           <>
             <ImageContainer>
               <Image src={Details.data.imageURL} />
+              {!active ? (
+                <Overlay>
+                  <OverlayText>
+                    Available Later
+                    <Hours style={{ color: "white" }}>
+                      Hours: {availableTimesToString(Details.data.timeSlots)}
+                    </Hours>
+                  </OverlayText>
+                </Overlay>
+              ) : (
+                ""
+              )}
             </ImageContainer>
             <CardBottom>
               <RestaurantDetailsContainer>
-                <NameContainer>{Details.data.displayName}</NameContainer>
+                <Box textOverflow="ellipsis">
+                  <TitleContainer>
+                    <Price>$ {Number(Details.data.price).toFixed(2)}</Price>
+                    <NameContainer>{Details.data.displayName}</NameContainer>
+                  </TitleContainer>
+                </Box>
                 <MaxOrder>
-                  Order by yourself or with friends and stack up to{" "}
-                  {Details.data.maxOrders} orders
+                  Order by yourself or with you friends and stack up to{" "}
+                  {Details.data.maxOrders} orders at the same fee.
                 </MaxOrder>
-                <Price>$ {Number(Details.data.price).toFixed(2)}</Price>
               </RestaurantDetailsContainer>
             </CardBottom>
           </>
@@ -90,6 +170,7 @@ function OptionCard({ Details, addToCart }) {
         setOpen={setOpen}
         Details={Details}
         addToCart={addToCart}
+        active={active}
       />
     </>
   );

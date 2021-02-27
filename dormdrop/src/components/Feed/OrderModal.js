@@ -108,7 +108,13 @@ const orderSchema = (formProperties) => {
   return object;
 };
 
-export default function RestaurantForm({ Details, open, setOpen, addToCart }) {
+export default function RestaurantForm({
+  Details,
+  open,
+  setOpen,
+  addToCart,
+  active,
+}) {
   const [orders, setOrders] = useState([
     orderSchema(Details.data.formProperties),
   ]);
@@ -203,20 +209,24 @@ export default function RestaurantForm({ Details, open, setOpen, addToCart }) {
                 );
               })}
             </Form>
-            {orders.length < Details.data.maxOrders ? (
+            {orders.length < Details.data.maxOrders  && active? (
               <FormFieldContainer>
                 <FullWidthButton onClick={addOrder}>
-                  Add Additional Order
+                  Add additional order at no extra fee
                 </FullWidthButton>
               </FormFieldContainer>
             ) : (
               ""
             )}
-            <FormFieldContainer>
-              <FullWidthButton onClick={handleAddToCart}>
-                Add To Cart
-              </FullWidthButton>
-            </FormFieldContainer>
+            {active ? (
+              <FormFieldContainer>
+                <FullWidthButton onClick={handleAddToCart}>
+                  Add to cart
+                </FullWidthButton>
+              </FormFieldContainer>
+            ) : (
+              ""
+            )}
           </FormContainer>
         </ContentWrapper>
       </ModalContainer>

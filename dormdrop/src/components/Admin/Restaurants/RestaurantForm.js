@@ -169,7 +169,7 @@ export default function RestaurantForm({ open, setOpen }) {
 
   useEffect(() => {
     getRegions();
-  }, []);
+  }, [open]);
 
   const handleImageChange = (event) => {
     if (event.target.files[0]) {

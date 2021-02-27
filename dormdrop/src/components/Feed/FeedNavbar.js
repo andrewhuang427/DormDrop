@@ -20,13 +20,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   navbar: { background: "white" },
-  toolbar: {
-    width: 1000,
-    display: "flex",
-    justifyContent: "space-between",
-    marginLeft: "auto",
-    marginRight: "auto",
-  },
+  toolbar: { maxWidth: 1400 },
   logo: {
     height: 60,
     objectFit: "contain",
@@ -88,6 +82,7 @@ export default function FeedNavbar({ removeFromCart, cart }) {
         <Toolbar className={classes.toolbar}>
           <LogoContainer className={classes.title}>
             <img
+              style={{ cursor: "pointer" }}
               src={DormDropLogo}
               alt={"DormDrop Logo"}
               className={classes.logo}
