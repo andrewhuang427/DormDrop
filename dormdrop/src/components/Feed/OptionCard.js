@@ -66,11 +66,8 @@ const TitleContainer = styled.div``;
 
 const Price = styled.div`
   display: inline-block;
-  padding: 5px;
-  color: white;
-  margin-right: 10px;
-  border-radius: 10px;
-  background-color: #3ab44b;
+  color: #3ab44b;
+  margin: 5px auto;
   font-weight: 600;
 `;
 
@@ -84,12 +81,12 @@ const NameContainer = styled.h3`
 
 const Hours = styled.div`
   font-weight: 600;
-  margin: 10px auto;
+  margin: 5px auto;
   font-size: 13px;
 `;
 
 const MaxOrder = styled.div`
-  margin: 10px auto;
+  margin: 5px auto;
   font-weight: 500;
   font-size: 13px;
 `;
@@ -152,10 +149,12 @@ function OptionCard({ Details, addToCart, active }) {
               <RestaurantDetailsContainer>
                 <Box textOverflow="ellipsis">
                   <TitleContainer>
-                    <Price>$ {Number(Details.data.price).toFixed(2)}</Price>
                     <NameContainer>{Details.data.displayName}</NameContainer>
                   </TitleContainer>
                 </Box>
+                <Price>
+                  $ {Number(Details.data.price).toFixed(2) + " Delivery"}
+                </Price>
                 <MaxOrder>
                   Order by yourself or with you friends and stack up to{" "}
                   {Details.data.maxOrders} orders at the same fee.

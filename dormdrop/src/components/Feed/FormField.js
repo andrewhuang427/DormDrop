@@ -22,13 +22,27 @@ function Name({ order, editOrder, orderIndex }) {
   }, [name]);
 
   return (
-    <TextField
-      variant="outlined"
-      placeholder="Name"
-      value={name}
-      onChange={handleChange}
-      fullWidth
-    />
+    <>
+      {name === "" ? (
+        <TextField
+          error
+          variant="outlined"
+          label="Name"
+          helperText="Required Field"
+          value={name}
+          onChange={handleChange}
+          fullWidth
+        />
+      ) : (
+        <TextField
+          variant="outlined"
+          label="Name"
+          value={name}
+          onChange={handleChange}
+          fullWidth
+        />
+      )}
+    </>
   );
 }
 
@@ -51,13 +65,27 @@ function OrderNumber({ order, editOrder, orderIndex }) {
   }, [orderNumber]);
 
   return (
-    <TextField
-      variant="outlined"
-      placeholder="Order Number"
-      onChange={handleChange}
-      value={orderNumber}
-      fullWidth
-    />
+    <>
+      {orderNumber === "" ? (
+        <TextField
+          error
+          variant="outlined"
+          label="Order Number"
+          helperText="Required Field"
+          onChange={handleChange}
+          value={orderNumber}
+          fullWidth
+        />
+      ) : (
+        <TextField
+          variant="outlined"
+          label="Order Number"
+          onChange={handleChange}
+          value={orderNumber}
+          fullWidth
+        />
+      )}
+    </>
   );
 }
 
@@ -98,7 +126,7 @@ function IncludeDrinkSelect({ order, editOrder, orderIndex }) {
         <div>
           <TextField
             variant="outlined"
-            placeholder="Enter what drink you ordered"
+            label="Enter what drink you ordered"
             value={drink}
             onChange={handleDrinkChange}
             fullWidth
@@ -172,7 +200,8 @@ function IncludeSauces({ order, editOrder, orderIndex }) {
       {includeSauces ? (
         <div>
           <TextField
-            placeholder="Enter which sauces you want"
+            label="Sauces"
+            helperText="Enter which sauces you want"
             variant="outlined"
             value={sauces}
             onChange={handleSaucesChange}
@@ -213,8 +242,7 @@ function AdditionalInstructions({ order, editOrder, orderIndex }) {
       fullWidth
       onChange={handleChange}
       value={additionalInstructions}
-      placeholder="Additional Instructions"
-      InputLabelProps={{ shrink: true }}
+      label="Additional Instructions"
     />
   );
 }

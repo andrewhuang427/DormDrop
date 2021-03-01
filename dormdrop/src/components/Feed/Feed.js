@@ -75,7 +75,7 @@ export default function Feed({ addToCart }) {
         <Grid container spacing={2} className={classes.content}>
           <Grid item xs={12}>
             <SectionHeadingContainer>
-              <SectionHeading>Available Now</SectionHeading>
+              <SectionHeading>Available now</SectionHeading>
               <SectionSubheading>
                 Select from the following options. You can selected up to the
                 specified number of orders.
@@ -92,7 +92,7 @@ export default function Feed({ addToCart }) {
             console.log(option);
             return (
               <Grid item xs={12} sm={4}>
-                <Paper key={index} elevation={2} style={{ height: "100%" }}>
+                <Paper key={index} elevation={1} style={{ height: "100%" }}>
                   <OptionCard
                     Details={option}
                     addToCart={addToCart}
@@ -117,7 +117,7 @@ export default function Feed({ addToCart }) {
             console.log(option);
             return (
               <Grid item xs={12} sm={4}>
-                <Paper key={index} elevation={2}>
+                <Paper key={index} elevation={1} style={{ height: "100%" }}>
                   <OptionCard
                     Details={option}
                     addToCart={addToCart}

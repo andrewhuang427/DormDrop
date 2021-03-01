@@ -28,9 +28,6 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
-  drawer: {
-    width: 250,
-  },
 }));
 
 const StyledBadge = withStyles((theme) => ({
@@ -49,8 +46,12 @@ const ProfileIconContainer = styled.div`
 `;
 
 const Placeholder = styled.div`
-  width: 350px;
+  width: 400px;
   color: black;
+`;
+
+const SidebarHeading = styled.div`
+  text-align: center;
 `;
 
 export default function FeedNavbar({ removeFromCart, cart }) {
@@ -134,6 +135,7 @@ export default function FeedNavbar({ removeFromCart, cart }) {
           <IconButton onClick={toggleDrawer}>
             <CloseIcon />
           </IconButton>
+          <SidebarHeading>Cart - Order Summary</SidebarHeading>
           <Cart cart={cart} removeFromCart={removeFromCart} />
         </Placeholder>
       </Drawer>

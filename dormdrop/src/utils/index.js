@@ -99,3 +99,9 @@ export const sortOptions = (options) => {
   console.log(object);
   return object;
 };
+
+export const isValidOrder = (order) => {
+  const { price, restaurant, orderDetails } = order;
+  for (let i = 0; i < orderDetails.length; ++i) {}
+  return true;
+};

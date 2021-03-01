@@ -116,6 +116,7 @@ const UploadImageInput = styled.input`
 `;
 
 const Button = styled.button`
+  outline: none;
   border-radius: 20px;
   width: 100%;
   border: none;

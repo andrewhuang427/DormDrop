@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "@material-ui/core/Modal";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 import FormField from "./FormField";
 import styled from "styled-components";
+import { isValidOrder } from "../../utils/index";
 
 const ModalContainer = styled.div`
   position: absolute;
@@ -48,13 +54,14 @@ const FormHeadingContainer = styled.div``;
 const FormHeading = styled.h3``;
 
 const Instructions = styled.div`
-  margin: 30px auto;
+  margin: 25px auto;
+  font-size: 13px;
 `;
 
 const Form = styled.form``;
 
 const FormFieldContainer = styled.div`
-  margin: 10px auto;
+  margin: 20px auto;
 `;
 
 const DividerContainer = styled.div`
@@ -148,13 +155,18 @@ export default function RestaurantForm({
   };
 
   const handleAddToCart = (event) => {
+    event.preventDefault();
     console.log(orders);
     const order = {
       price: Details.data.price,
       restaurant: Details.data.displayName,
       orderDetails: orders,
     };
-    addToCart(order);
+    if (isValidOrder(order)) {
+      addToCart(order);
+    } else {
+      // set errors
+    }
   };
 
   return (
@@ -177,6 +189,16 @@ export default function RestaurantForm({
                   <>
                     <div key={index}>
                       <FormFieldContainer>Order {index + 1}</FormFieldContainer>
+                      {Details.data.restaurants.length > 1 ? (
+                        <SelectSingleRestaurant
+                          Details={Details}
+                          order={order}
+                          editOrder={editOrder}
+                          orderIndex={index}
+                        />
+                      ) : (
+                        ""
+                      )}
                       {Details.data.formProperties.map((field, fieldIndex) => {
                         return (
                           <FormFieldContainer key={fieldIndex}>
@@ -209,7 +231,7 @@ export default function RestaurantForm({
                 );
               })}
             </Form>
-            {orders.length < Details.data.maxOrders  && active? (
+            {orders.length < Details.data.maxOrders && active ? (
               <FormFieldContainer>
                 <FullWidthButton onClick={addOrder}>
                   Add additional order at no extra fee
@@ -231,5 +253,78 @@ export default function RestaurantForm({
         </ContentWrapper>
       </ModalContainer>
     </Modal>
+  );
+}
+
+function SelectSingleRestaurant({ Details, order, editOrder, orderIndex }) {
+  const [restaurant, setRestaurant] = useState("");
+
+  useEffect(() => {
+    if (order.restaurant !== undefined) {
+      setRestaurant(order.restaurant);
+    }
+  }, [order]);
+
+  const handleChange = (event) => {
+    const newRestaurant = event.target.value;
+    setRestaurant(newRestaurant);
+  };
+
+  useEffect(() => {
+    const newOrder = { ...order };
+    newOrder.restaurant = restaurant;
+    editOrder(newOrder, orderIndex);
+  }, [restaurant]);
+
+  return (
+    <>
+      {restaurant === "" ? (
+        <FormControl fullWidth variant="outlined">
+          <InputLabel id="select-restaurant-label" error>
+            Restaurant
+          </InputLabel>
+          <Select
+            error
+            labelId="select-restaurant-label"
+            label="Restaurant"
+            value={restaurant}
+            onChange={handleChange}
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            {Details.data.restaurants.map((restaurant, index) => {
+              return (
+                <MenuItem value={restaurant} key={index}>
+                  {restaurant}
+                </MenuItem>
+              );
+            })}
+          </Select>
+          <FormHelperText error>Required Field</FormHelperText>
+        </FormControl>
+      ) : (
+        <FormControl fullWidth variant="outlined">
+          <InputLabel id="select-restaurant-label">Restaurant</InputLabel>
+          <Select
+            labelId="select-restaurant-label"
+            label="Restaurant"
+            value={restaurant}
+            onChange={handleChange}
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            {Details.data.restaurants.map((restaurant, index) => {
+              return (
+                <MenuItem value={restaurant} key={index}>
+                  {restaurant}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
+      )}
+    </>
   );
 }
