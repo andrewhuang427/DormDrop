@@ -25,33 +25,39 @@ const stripePromise = loadStripe(
 function App() {
   return (
     <UserProvider>
-      <Router>
-        <div className="App">
-          <Switch>
-            <PublicRoute restricted={false} component={Home} path="/" exact />
-            <PublicRoute
-              restricted={true}
-              component={SignIn}
-              path="/login"
-              exact
-            />
-            <PublicRoute
-              restricted={true}
-              component={SignUp}
-              path="/register"
-              exact
-            />
-            <PrivateRoute component={UserFeed} path="/feed" exact />
-            <PrivateRoute component={Checkout} path="/checkout" exact />
-            <PrivateRoute
-              component={AdminDashboard}
-              path="/admin/dashboard"
-              exact
-            />
-            <PrivateRoute component={AdminOrders} path="/admin/orders" exact />
-          </Switch>
-        </div>
-      </Router>
+      <Elements stripe={stripePromise}>
+        <Router>
+          <div className="App">
+            <Switch>
+              <PublicRoute restricted={false} component={Home} path="/" exact />
+              <PublicRoute
+                restricted={true}
+                component={SignIn}
+                path="/login"
+                exact
+              />
+              <PublicRoute
+                restricted={true}
+                component={SignUp}
+                path="/register"
+                exact
+              />
+              <PrivateRoute component={UserFeed} path="/feed" exact />
+              <PrivateRoute component={Checkout} path="/checkout" exact />
+              <PrivateRoute
+                component={AdminDashboard}
+                path="/admin/dashboard"
+                exact
+              />
+              <PrivateRoute
+                component={AdminOrders}
+                path="/admin/orders"
+                exact
+              />
+            </Switch>
+          </div>
+        </Router>
+      </Elements>
     </UserProvider>
   );
 }

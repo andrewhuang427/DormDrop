@@ -4,15 +4,11 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import CloseIcon from "@material-ui/icons/Close";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import DormDropLogo from "../../images/logo.png";
-import Drawer from "@material-ui/core/Drawer";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import Badge from "@material-ui/core/Badge";
 import styled from "styled-components";
-import Cart from "./Cart";
 import { useHistory } from "react-router-dom";
 import { signOut } from "../../firebase/firebase";
 
@@ -55,16 +51,12 @@ const SidebarHeading = styled.div`
   text-align: center;
 `;
 
-export default function FeedNavbar({ removeFromCart, cart }) {
+export default function CheckoutNavbar({ removeFromCart, cart }) {
   const history = useHistory();
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const profileMenuOpen = Boolean(anchorEl);
-
-  const toggleDrawer = (event) => {
-    setDrawerOpen(!drawerOpen);
-  };
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -120,27 +112,9 @@ export default function FeedNavbar({ removeFromCart, cart }) {
               <MenuItem onClick={handleClose}>My account</MenuItem>
               <MenuItem onClick={signOut}>Sign Out</MenuItem>
             </Menu>
-            <IconButton
-              onClick={() => {
-                setDrawerOpen(true);
-              }}
-            >
-              <StyledBadge badgeContent={cart.length} color="secondary">
-                <ShoppingCartIcon />
-              </StyledBadge>
-            </IconButton>
           </ProfileIconContainer>
         </Toolbar>
       </AppBar>
-      <Drawer anchor={"right"} open={drawerOpen} className={classes.drawer}>
-        <Placeholder style={{ padding: 10 }}>
-          <IconButton onClick={toggleDrawer}>
-            <CloseIcon />
-          </IconButton>
-          <SidebarHeading>Cart - Order Summary</SidebarHeading>
-          <Cart cart={cart} removeFromCart={removeFromCart} />
-        </Placeholder>
-      </Drawer>
     </div>
   );
 }

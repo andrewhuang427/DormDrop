@@ -9,6 +9,7 @@ const Hero = styled.div`
   padding-top: 20px;
   padding-bottom: 20px;
   background-color: #3ab44b;
+  box-shadow: inset 0px -11px 8px -10px #888888;
 `;
 
 const HeadingContainer = styled.div`
@@ -18,14 +19,21 @@ const HeadingContainer = styled.div`
 `;
 
 const OrderNow = styled.h1`
-  font-size: 50px;
+  font-size: 40px;
   color: white;
 `;
 
 function UserFeed() {
-  const [cart, setCart] = useState(
-    JSON.parse(window.localStorage.getItem("cart"))
-  );
+  const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    if (window.localStorage.getItem("cart") === null) {
+      setCart([]);
+      window.localStorage.setItem("cart", []);
+    } else {
+      setCart(JSON.parse(window.localStorage.getItem("cart")));
+    }
+  }, []);
 
   const addToCart = (order) => {
     const newCart = [...cart, order];

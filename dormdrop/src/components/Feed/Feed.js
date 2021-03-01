@@ -30,13 +30,13 @@ const SectionHeadingContainer = styled.div`
 `;
 
 const SectionHeading = styled.h1`
-  font-size: 30px;
+  font-size: 25px;
   margin-top: 0;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
 `;
 
 const SectionSubheading = styled.div`
-  color: #8d8d8d;
+  color: gray;
   font-weight: 500;
   font-size: 13px;
 `;
