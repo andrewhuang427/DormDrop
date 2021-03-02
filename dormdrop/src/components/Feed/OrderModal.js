@@ -69,6 +69,7 @@ const DividerContainer = styled.div`
 `;
 
 const FullWidthButton = styled.button`
+  outline: none;
   border-radius: 20px;
   width: 100%;
   border: none;

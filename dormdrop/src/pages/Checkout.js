@@ -36,7 +36,7 @@ function Checkout() {
     } else {
       setCart(JSON.parse(window.localStorage.getItem("cart")));
     }
-  });
+  }, []);
 
   return (
     <>

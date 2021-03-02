@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Cart({ cart, removeFromCart }) {
+  const classes = useStyles();
   return (
     <>
       {cart.map((order, index) => {
