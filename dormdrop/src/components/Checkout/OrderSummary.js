@@ -335,7 +335,7 @@ function OrderSummary({ cart }) {
                 </div>
               </div>
               <div className={classes.pricingDetailsContainer}>
-                <h3 className={classes.subheading}>Tip Amount</h3>
+                <h3 className={classes.subheading}>Tip Amount (Goes straight to DormDropper)</h3>
                 <div className={classes.subheading} style={{ color: "gray" }}>
                   ${tip.toFixed(2)}
                 </div>

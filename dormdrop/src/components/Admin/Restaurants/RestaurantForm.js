@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Modal from "@material-ui/core/Modal";
 import TextField from "@material-ui/core/TextField";
 import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -144,9 +145,9 @@ const formFields = [
 export default function RestaurantForm({ open, setOpen }) {
   const [displayName, setDisplayName] = useState("");
   const [restaurants, setRestaurants] = useState([]);
-  const [price, setPrice] = useState(0);
+  const [prices, setPrices] = useState([]);
   const [maxOrders, setMaxOrders] = useState(0);
-  const [timeSlots, setTimeSlots] = useState([]);
+  const [timeSlots, setTimeSlots] = useState([[], [], [], [], [], [], []]);
   const [instructions, setInstructions] = useState("");
   const [campusRegion, setCampusRegion] = useState("");
   const [image, setImage] = useState(null);
@@ -187,7 +188,7 @@ export default function RestaurantForm({ open, setOpen }) {
     const data = {
       displayName,
       restaurants,
-      price: Number(price),
+      prices,
       maxOrders: Number(maxOrders),
       timeSlots,
       instructions,
@@ -233,9 +234,8 @@ export default function RestaurantForm({ open, setOpen }) {
   const handleClose = () => {
     setDisplayName("");
     setRestaurants([]);
-    setPrice(0);
     setMaxOrders(0);
-    setTimeSlots([]);
+    setTimeSlots([[], [], [], [], [], [], []]);
     setInstructions("");
     setCampusRegion("");
     setImage(null);
@@ -267,22 +267,25 @@ export default function RestaurantForm({ open, setOpen }) {
     setRestaurants(copy);
   };
 
-  // Time Slot Methods
+  // Time Slots represented by array ["Sunday", "Monday", "Tuesday", ....]
 
-  const addTimeSlot = () => {
-    setTimeSlots([...timeSlots, { open: 0, close: 0 }]);
-  };
-
-  const editTimeSlot = (index, editedSlot) => {
+  const addTimeSlot = (dayOfTheWeek) => {
     let copy = [...timeSlots];
-    copy[index] = editedSlot;
+    copy[dayOfTheWeek].push({ open: 0, close: 0 });
     console.log(copy);
     setTimeSlots(copy);
   };
 
-  const removeTimeSlot = (index) => {
+  const editTimeSlot = (dayOfTheWeek, index, editedSlot) => {
     let copy = [...timeSlots];
-    copy.splice(index, 1);
+    copy[dayOfTheWeek][index] = editedSlot;
+    console.log(copy);
+    setTimeSlots(copy);
+  };
+
+  const removeTimeSlot = (dayOfTheWeek, index) => {
+    let copy = [...timeSlots];
+    copy[dayOfTheWeek].splice(index, 1);
     console.log(copy);
     setTimeSlots(copy);
   };
@@ -290,6 +293,25 @@ export default function RestaurantForm({ open, setOpen }) {
   const handleFormPropertyChange = (event) => {
     const properties = event.target.value;
     setFormProperties(properties);
+  };
+
+  // Price methods
+
+  const addNewPrice = () => {
+    setPrices([...prices, { campusRegion: "", amount: 0 }]);
+  };
+
+  const editPrice = (index, newPrice) => {
+    let copy = [...prices];
+    copy[index] = newPrice;
+    console.log(copy);
+    setPrices(copy);
+  };
+
+  const removePrice = (index) => {
+    let copy = [...prices];
+    copy.splice(index, 1);
+    setPrices(copy);
   };
 
   return (
@@ -352,15 +374,29 @@ export default function RestaurantForm({ open, setOpen }) {
                 />
               </TextFieldContainer>
               <TextFieldContainer>
-                <TextFieldLabel>Price</TextFieldLabel>
-                <TextField
-                  type="number"
-                  value={price}
-                  variant="outlined"
-                  onChange={(event) => {
-                    setPrice(event.target.value);
-                  }}
-                />
+                <AddRestaurantContainer>
+                  <AddRestaurantHeading>Prices</AddRestaurantHeading>
+                  <AddIconContainer>
+                    <IconButton onClick={addNewPrice}>
+                      <AddIcon style={{ fill: "green" }} />
+                    </IconButton>
+                  </AddIconContainer>
+                </AddRestaurantContainer>
+                <NewRestaurantContainer>
+                  {prices.map((price, index) => {
+                    console.log(price);
+                    return (
+                      <Price
+                        key={index}
+                        index={index}
+                        campusRegions={regions}
+                        price={price}
+                        editPrice={editPrice}
+                        removePrice={removePrice}
+                      />
+                    );
+                  })}
+                </NewRestaurantContainer>
               </TextFieldContainer>
               <TextFieldContainer>
                 <TextFieldLabel>Max Orders</TextFieldLabel>
@@ -376,19 +412,198 @@ export default function RestaurantForm({ open, setOpen }) {
               </TextFieldContainer>
               <TextFieldContainer>
                 <AddRestaurantContainer>
-                  <AddRestaurantHeading>Time Slots</AddRestaurantHeading>
+                  <AddRestaurantHeading>Monday</AddRestaurantHeading>
                   <AddIconContainer>
-                    <IconButton onClick={addTimeSlot}>
+                    <IconButton
+                      onClick={() => {
+                        addTimeSlot(1);
+                      }}
+                    >
                       <AddIcon style={{ fill: "green" }} />
                     </IconButton>
                   </AddIconContainer>
                 </AddRestaurantContainer>
                 <NewRestaurantContainer>
-                  {timeSlots.map((timeSlot, index) => {
+                  {timeSlots[1].map((timeSlot, index) => {
                     console.log(timeSlot);
                     return (
                       <TimeSlot
                         key={index}
+                        dayOfTheWeek={1}
+                        index={index}
+                        timeSlot={timeSlot}
+                        editTimeSlot={editTimeSlot}
+                        removeTimeSlot={removeTimeSlot}
+                      />
+                    );
+                  })}
+                </NewRestaurantContainer>
+              </TextFieldContainer>
+              <TextFieldContainer>
+                <AddRestaurantContainer>
+                  <AddRestaurantHeading>Tuesday</AddRestaurantHeading>
+                  <AddIconContainer>
+                    <IconButton
+                      onClick={() => {
+                        addTimeSlot(2);
+                      }}
+                    >
+                      <AddIcon style={{ fill: "green" }} />
+                    </IconButton>
+                  </AddIconContainer>
+                </AddRestaurantContainer>
+                <NewRestaurantContainer>
+                  {timeSlots[2].map((timeSlot, index) => {
+                    console.log(timeSlot);
+                    return (
+                      <TimeSlot
+                        key={index}
+                        dayOfTheWeek={2}
+                        index={index}
+                        timeSlot={timeSlot}
+                        editTimeSlot={editTimeSlot}
+                        removeTimeSlot={removeTimeSlot}
+                      />
+                    );
+                  })}
+                </NewRestaurantContainer>
+              </TextFieldContainer>
+              <TextFieldContainer>
+                <AddRestaurantContainer>
+                  <AddRestaurantHeading>Wednesday</AddRestaurantHeading>
+                  <AddIconContainer>
+                    <IconButton
+                      onClick={() => {
+                        addTimeSlot(3);
+                      }}
+                    >
+                      <AddIcon style={{ fill: "green" }} />
+                    </IconButton>
+                  </AddIconContainer>
+                </AddRestaurantContainer>
+                <NewRestaurantContainer>
+                  {timeSlots[3].map((timeSlot, index) => {
+                    console.log(timeSlot);
+                    return (
+                      <TimeSlot
+                        key={index}
+                        dayOfTheWeek={3}
+                        index={index}
+                        timeSlot={timeSlot}
+                        editTimeSlot={editTimeSlot}
+                        removeTimeSlot={removeTimeSlot}
+                      />
+                    );
+                  })}
+                </NewRestaurantContainer>
+              </TextFieldContainer>
+              <TextFieldContainer>
+                <AddRestaurantContainer>
+                  <AddRestaurantHeading>Thursday</AddRestaurantHeading>
+                  <AddIconContainer>
+                    <IconButton
+                      onClick={() => {
+                        addTimeSlot(4);
+                      }}
+                    >
+                      <AddIcon style={{ fill: "green" }} />
+                    </IconButton>
+                  </AddIconContainer>
+                </AddRestaurantContainer>
+                <NewRestaurantContainer>
+                  {timeSlots[4].map((timeSlot, index) => {
+                    console.log(timeSlot);
+                    return (
+                      <TimeSlot
+                        key={index}
+                        dayOfTheWeek={4}
+                        index={index}
+                        timeSlot={timeSlot}
+                        editTimeSlot={editTimeSlot}
+                        removeTimeSlot={removeTimeSlot}
+                      />
+                    );
+                  })}
+                </NewRestaurantContainer>
+              </TextFieldContainer>
+              <TextFieldContainer>
+                <AddRestaurantContainer>
+                  <AddRestaurantHeading>Friday</AddRestaurantHeading>
+                  <AddIconContainer>
+                    <IconButton
+                      onClick={() => {
+                        addTimeSlot(5);
+                      }}
+                    >
+                      <AddIcon style={{ fill: "green" }} />
+                    </IconButton>
+                  </AddIconContainer>
+                </AddRestaurantContainer>
+                <NewRestaurantContainer>
+                  {timeSlots[5].map((timeSlot, index) => {
+                    console.log(timeSlot);
+                    return (
+                      <TimeSlot
+                        key={index}
+                        dayOfTheWeek={5}
+                        index={index}
+                        timeSlot={timeSlot}
+                        editTimeSlot={editTimeSlot}
+                        removeTimeSlot={removeTimeSlot}
+                      />
+                    );
+                  })}
+                </NewRestaurantContainer>
+              </TextFieldContainer>
+              <TextFieldContainer>
+                <AddRestaurantContainer>
+                  <AddRestaurantHeading>Saturday</AddRestaurantHeading>
+                  <AddIconContainer>
+                    <IconButton
+                      onClick={() => {
+                        addTimeSlot(6);
+                      }}
+                    >
+                      <AddIcon style={{ fill: "green" }} />
+                    </IconButton>
+                  </AddIconContainer>
+                </AddRestaurantContainer>
+                <NewRestaurantContainer>
+                  {timeSlots[6].map((timeSlot, index) => {
+                    console.log(timeSlot);
+                    return (
+                      <TimeSlot
+                        key={index}
+                        dayOfTheWeek={6}
+                        index={index}
+                        timeSlot={timeSlot}
+                        editTimeSlot={editTimeSlot}
+                        removeTimeSlot={removeTimeSlot}
+                      />
+                    );
+                  })}
+                </NewRestaurantContainer>
+              </TextFieldContainer>
+              <TextFieldContainer>
+                <AddRestaurantContainer>
+                  <AddRestaurantHeading>Sunday</AddRestaurantHeading>
+                  <AddIconContainer>
+                    <IconButton
+                      onClick={() => {
+                        addTimeSlot(0);
+                      }}
+                    >
+                      <AddIcon style={{ fill: "green" }} />
+                    </IconButton>
+                  </AddIconContainer>
+                </AddRestaurantContainer>
+                <NewRestaurantContainer>
+                  {timeSlots[0].map((timeSlot, index) => {
+                    console.log(timeSlot);
+                    return (
+                      <TimeSlot
+                        key={index}
+                        dayOfTheWeek={0}
                         index={index}
                         timeSlot={timeSlot}
                         editTimeSlot={editTimeSlot}
@@ -535,21 +750,94 @@ function Restaurant({ index, restaurant, editRestaurant, removeRestaurant }) {
   };
   return (
     <RestaurantContainer>
-      <div>
-        <TextField
-          variant="outlined"
-          placeholder="Restaurant Name"
-          value={restaurant}
-          onChange={handleChange}
-          helperText={`Restaurant #${index + 1}`}
-        />
-      </div>
+      <TextField
+        variant="outlined"
+        placeholder="Restaurant Name"
+        value={restaurant}
+        onChange={handleChange}
+        helperText={`Restaurant ${index + 1}`}
+        fullWidth
+      />
       <RemoveRestaurantButtonContainer>
         <IconButton onClick={handleDelete}>
           <RemoveIcon style={{ fill: "red" }} />
         </IconButton>
       </RemoveRestaurantButtonContainer>
     </RestaurantContainer>
+  );
+}
+
+const PriceInputContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+`;
+
+function Price({ index, campusRegions, price, editPrice, removePrice }) {
+  const [campusRegion, setCampusRegion] = useState(price.campusRegion);
+  const [amount, setAmount] = useState(price.amount);
+
+  useEffect(() => {
+    setCampusRegion(price.campusRegion);
+    setAmount(price.amount);
+  }, [price]);
+
+  const handleDelete = () => {
+    removePrice(index);
+  };
+
+  const handleAmountChange = (event) => {
+    setAmount(event.target.value);
+  };
+
+  const handleCampusRegionChange = (event) => {
+    setCampusRegion(event.target.value);
+  };
+
+  useEffect(() => {
+    const newPrice = {
+      campusRegion,
+      amount: Number(amount),
+    };
+    editPrice(index, newPrice);
+  }, [amount, campusRegion]);
+
+  return (
+    <PriceInputContainer>
+      <TextField
+        type="number"
+        variant="outlined"
+        label="Amount"
+        style={{ width: "25%", marginRight: 10 }}
+        value={amount}
+        onChange={handleAmountChange}
+      />
+      <FormControl variant="outlined" style={{ width: "75%" }}>
+        <InputLabel id="select-campus-region">Campus Region</InputLabel>
+        <Select
+          labelId="select-campus-region"
+          label="Campus Region"
+          value={campusRegion}
+          onChange={handleCampusRegionChange}
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          {campusRegions.map((region) => {
+            return (
+              <MenuItem value={region.data.name} key={region.id}>
+                {region.data.name}
+              </MenuItem>
+            );
+          })}
+        </Select>
+      </FormControl>
+      <RemoveTimeSlotContainer>
+        <IconButton onClick={handleDelete}>
+          <RemoveIcon style={{ fill: "red" }} />
+        </IconButton>
+      </RemoveTimeSlotContainer>
+    </PriceInputContainer>
   );
 }
 
@@ -570,12 +858,18 @@ const CloseTimeContainer = styled.div``;
 
 const RemoveTimeSlotContainer = styled.div``;
 
-function TimeSlot({ index, timeSlot, editTimeSlot, removeTimeSlot }) {
+function TimeSlot({
+  index,
+  dayOfTheWeek,
+  timeSlot,
+  editTimeSlot,
+  removeTimeSlot,
+}) {
   const [open, setOpen] = useState(timeSlot.open);
   const [close, setClose] = useState(timeSlot.close);
 
   const handleDelete = () => {
-    removeTimeSlot(index);
+    removeTimeSlot(dayOfTheWeek, index);
   };
 
   const handleOpenTimeChange = (event) => {
@@ -594,7 +888,7 @@ function TimeSlot({ index, timeSlot, editTimeSlot, removeTimeSlot }) {
       close,
     };
     console.log(newHours);
-    editTimeSlot(index, newHours);
+    editTimeSlot(dayOfTheWeek, index, newHours);
   }, [open, close]);
 
   return (
