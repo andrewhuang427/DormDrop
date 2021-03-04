@@ -147,7 +147,16 @@ export default function RestaurantForm({ open, setOpen }) {
   const [restaurants, setRestaurants] = useState([]);
   const [prices, setPrices] = useState([]);
   const [maxOrders, setMaxOrders] = useState(0);
-  const [timeSlots, setTimeSlots] = useState([[], [], [], [], [], [], []]);
+  const [hours, setHours] = useState({
+    monday: [],
+    tuesday: [],
+    wednesday: [],
+    thursday: [],
+    friday: [],
+    saturday: [],
+    sunday: [],
+  });
+  // const [hours, setHours] = useState([[], [], [], [], [], [], []]);
   const [instructions, setInstructions] = useState("");
   const [campusRegion, setCampusRegion] = useState("");
   const [image, setImage] = useState(null);
@@ -185,24 +194,30 @@ export default function RestaurantForm({ open, setOpen }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     setLoading(true);
+
     const data = {
       displayName,
       restaurants,
       prices,
       maxOrders: Number(maxOrders),
-      timeSlots,
+      hours,
       instructions,
       campusRegion,
       formProperties,
     };
+    console.log(data);
     if (image === null) {
       setError("Must include image");
       setLoading(false);
-    } else if (validateRestaurantForm(data) !== "") {
-      setError(validateRestaurantForm(data));
-      setLoading(false);
-    } else {
-      const uploadTask = storage.ref(`images/${image.name}`).put(image);
+    }
+    // else if (validateRestaurantForm(data) !== "") {
+    //   setError(validateRestaurantForm(data));
+    //   setLoading(false);
+    // }
+    else {
+      const uploadTask = storage
+        .ref(`restaurant_images/${image.name}`)
+        .put(image);
       uploadTask.on(
         "state_changed",
         (snapshot) => {
@@ -215,13 +230,13 @@ export default function RestaurantForm({ open, setOpen }) {
         },
         () => {
           storage
-            .ref("images")
+            .ref("restaurant_images")
             .child(image.name)
             .getDownloadURL()
             .then((url) => {
               console.log(url);
               data.imageURL = url;
-              data.imageRef = `images/${image.name}`;
+              data.imageRef = `restaurant_images/${image.name}`;
               createRestaurant(data);
               setLoading(false);
               handleClose();
@@ -232,19 +247,19 @@ export default function RestaurantForm({ open, setOpen }) {
   };
 
   const handleClose = () => {
-    setDisplayName("");
-    setRestaurants([]);
-    setMaxOrders(0);
-    setTimeSlots([[], [], [], [], [], [], []]);
-    setInstructions("");
-    setCampusRegion("");
-    setImage(null);
-    setImageSRC(null);
-    setRegions([]);
-    setFormProperties([]);
+    // setDisplayName("");
+    // setRestaurants([]);
+    // setMaxOrders(0);
+    // setTimeSlots([[], [], [], [], [], [], []]);
+    // setInstructions("");
+    // setCampusRegion("");
+    // setImage(null);
+    // setImageSRC(null);
+    // setRegions([]);
+    // setFormProperties([]);
+    // setLoading(false);
+    // setError("");
     setOpen(false);
-    setLoading(false);
-    setError("");
   };
 
   // Restaurant Methods
@@ -256,38 +271,35 @@ export default function RestaurantForm({ open, setOpen }) {
   const editRestaurant = (index, text) => {
     let copy = [...restaurants];
     copy[index] = text;
-    console.log(copy);
     setRestaurants(copy);
   };
 
   const removeRestaurant = (index) => {
     let copy = [...restaurants];
     copy.splice(index, 1);
-    console.log(copy);
     setRestaurants(copy);
   };
 
   // Time Slots represented by array ["Sunday", "Monday", "Tuesday", ....]
 
   const addTimeSlot = (dayOfTheWeek) => {
-    let copy = [...timeSlots];
+    console.log(dayOfTheWeek);
+    let copy = { ...hours };
     copy[dayOfTheWeek].push({ open: 0, close: 0 });
-    console.log(copy);
-    setTimeSlots(copy);
+    setHours(copy);
   };
 
   const editTimeSlot = (dayOfTheWeek, index, editedSlot) => {
-    let copy = [...timeSlots];
+    let copy = { ...hours };
     copy[dayOfTheWeek][index] = editedSlot;
     console.log(copy);
-    setTimeSlots(copy);
+    setHours(copy);
   };
 
   const removeTimeSlot = (dayOfTheWeek, index) => {
-    let copy = [...timeSlots];
+    let copy = { ...hours };
     copy[dayOfTheWeek].splice(index, 1);
-    console.log(copy);
-    setTimeSlots(copy);
+    setHours(copy);
   };
 
   const handleFormPropertyChange = (event) => {
@@ -304,7 +316,6 @@ export default function RestaurantForm({ open, setOpen }) {
   const editPrice = (index, newPrice) => {
     let copy = [...prices];
     copy[index] = newPrice;
-    console.log(copy);
     setPrices(copy);
   };
 
@@ -315,7 +326,12 @@ export default function RestaurantForm({ open, setOpen }) {
   };
 
   return (
-    <Modal onClose={handleClose} open={open}>
+    <Modal
+      onClose={() => {
+        setOpen(false);
+      }}
+      open={open}
+    >
       <ModalContainer>
         <ContentWrapper>
           <ImageContainer>
@@ -384,7 +400,6 @@ export default function RestaurantForm({ open, setOpen }) {
                 </AddRestaurantContainer>
                 <NewRestaurantContainer>
                   {prices.map((price, index) => {
-                    console.log(price);
                     return (
                       <Price
                         key={index}
@@ -416,7 +431,7 @@ export default function RestaurantForm({ open, setOpen }) {
                   <AddIconContainer>
                     <IconButton
                       onClick={() => {
-                        addTimeSlot(1);
+                        addTimeSlot("monday");
                       }}
                     >
                       <AddIcon style={{ fill: "green" }} />
@@ -424,12 +439,11 @@ export default function RestaurantForm({ open, setOpen }) {
                   </AddIconContainer>
                 </AddRestaurantContainer>
                 <NewRestaurantContainer>
-                  {timeSlots[1].map((timeSlot, index) => {
-                    console.log(timeSlot);
+                  {hours.monday.map((timeSlot, index) => {
                     return (
                       <TimeSlot
                         key={index}
-                        dayOfTheWeek={1}
+                        dayOfTheWeek={"monday"}
                         index={index}
                         timeSlot={timeSlot}
                         editTimeSlot={editTimeSlot}
@@ -445,7 +459,7 @@ export default function RestaurantForm({ open, setOpen }) {
                   <AddIconContainer>
                     <IconButton
                       onClick={() => {
-                        addTimeSlot(2);
+                        addTimeSlot("tuesday");
                       }}
                     >
                       <AddIcon style={{ fill: "green" }} />
@@ -453,12 +467,11 @@ export default function RestaurantForm({ open, setOpen }) {
                   </AddIconContainer>
                 </AddRestaurantContainer>
                 <NewRestaurantContainer>
-                  {timeSlots[2].map((timeSlot, index) => {
-                    console.log(timeSlot);
+                  {hours.tuesday.map((timeSlot, index) => {
                     return (
                       <TimeSlot
                         key={index}
-                        dayOfTheWeek={2}
+                        dayOfTheWeek={"tuesday"}
                         index={index}
                         timeSlot={timeSlot}
                         editTimeSlot={editTimeSlot}
@@ -474,7 +487,7 @@ export default function RestaurantForm({ open, setOpen }) {
                   <AddIconContainer>
                     <IconButton
                       onClick={() => {
-                        addTimeSlot(3);
+                        addTimeSlot("wednesday");
                       }}
                     >
                       <AddIcon style={{ fill: "green" }} />
@@ -482,12 +495,11 @@ export default function RestaurantForm({ open, setOpen }) {
                   </AddIconContainer>
                 </AddRestaurantContainer>
                 <NewRestaurantContainer>
-                  {timeSlots[3].map((timeSlot, index) => {
-                    console.log(timeSlot);
+                  {hours.wednesday.map((timeSlot, index) => {
                     return (
                       <TimeSlot
                         key={index}
-                        dayOfTheWeek={3}
+                        dayOfTheWeek={"wednesday"}
                         index={index}
                         timeSlot={timeSlot}
                         editTimeSlot={editTimeSlot}
@@ -503,7 +515,7 @@ export default function RestaurantForm({ open, setOpen }) {
                   <AddIconContainer>
                     <IconButton
                       onClick={() => {
-                        addTimeSlot(4);
+                        addTimeSlot("thursday");
                       }}
                     >
                       <AddIcon style={{ fill: "green" }} />
@@ -511,12 +523,11 @@ export default function RestaurantForm({ open, setOpen }) {
                   </AddIconContainer>
                 </AddRestaurantContainer>
                 <NewRestaurantContainer>
-                  {timeSlots[4].map((timeSlot, index) => {
-                    console.log(timeSlot);
+                  {hours.thursday.map((timeSlot, index) => {
                     return (
                       <TimeSlot
                         key={index}
-                        dayOfTheWeek={4}
+                        dayOfTheWeek={"thursday"}
                         index={index}
                         timeSlot={timeSlot}
                         editTimeSlot={editTimeSlot}
@@ -532,7 +543,7 @@ export default function RestaurantForm({ open, setOpen }) {
                   <AddIconContainer>
                     <IconButton
                       onClick={() => {
-                        addTimeSlot(5);
+                        addTimeSlot("friday");
                       }}
                     >
                       <AddIcon style={{ fill: "green" }} />
@@ -540,12 +551,11 @@ export default function RestaurantForm({ open, setOpen }) {
                   </AddIconContainer>
                 </AddRestaurantContainer>
                 <NewRestaurantContainer>
-                  {timeSlots[5].map((timeSlot, index) => {
-                    console.log(timeSlot);
+                  {hours.friday.map((timeSlot, index) => {
                     return (
                       <TimeSlot
                         key={index}
-                        dayOfTheWeek={5}
+                        dayOfTheWeek={"friday"}
                         index={index}
                         timeSlot={timeSlot}
                         editTimeSlot={editTimeSlot}
@@ -561,7 +571,7 @@ export default function RestaurantForm({ open, setOpen }) {
                   <AddIconContainer>
                     <IconButton
                       onClick={() => {
-                        addTimeSlot(6);
+                        addTimeSlot("saturday");
                       }}
                     >
                       <AddIcon style={{ fill: "green" }} />
@@ -569,12 +579,11 @@ export default function RestaurantForm({ open, setOpen }) {
                   </AddIconContainer>
                 </AddRestaurantContainer>
                 <NewRestaurantContainer>
-                  {timeSlots[6].map((timeSlot, index) => {
-                    console.log(timeSlot);
+                  {hours.saturday.map((timeSlot, index) => {
                     return (
                       <TimeSlot
                         key={index}
-                        dayOfTheWeek={6}
+                        dayOfTheWeek={"saturday"}
                         index={index}
                         timeSlot={timeSlot}
                         editTimeSlot={editTimeSlot}
@@ -590,7 +599,7 @@ export default function RestaurantForm({ open, setOpen }) {
                   <AddIconContainer>
                     <IconButton
                       onClick={() => {
-                        addTimeSlot(0);
+                        addTimeSlot("sunday");
                       }}
                     >
                       <AddIcon style={{ fill: "green" }} />
@@ -598,12 +607,11 @@ export default function RestaurantForm({ open, setOpen }) {
                   </AddIconContainer>
                 </AddRestaurantContainer>
                 <NewRestaurantContainer>
-                  {timeSlots[0].map((timeSlot, index) => {
-                    console.log(timeSlot);
+                  {hours.sunday.map((timeSlot, index) => {
                     return (
                       <TimeSlot
                         key={index}
-                        dayOfTheWeek={0}
+                        dayOfTheWeek={"sunday"}
                         index={index}
                         timeSlot={timeSlot}
                         editTimeSlot={editTimeSlot}
@@ -815,6 +823,7 @@ function Price({ index, campusRegions, price, editPrice, removePrice }) {
       <FormControl variant="outlined" style={{ width: "75%" }}>
         <InputLabel id="select-campus-region">Campus Region</InputLabel>
         <Select
+          defaultValue=""
           labelId="select-campus-region"
           label="Campus Region"
           value={campusRegion}

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import RestaurantForm from "./RestaurantForm";
+import NewRestaurantTable from "./NewRestaurantTable"
 import RestaurantsTable from "./RestaurantTable";
 import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
@@ -64,7 +65,8 @@ function Restaurant() {
           </SectionHeadingContainer>
           <Divider />
           <TableContainer>
-            <RestaurantsTable />
+            <NewRestaurantTable />
+            {/* <RestaurantsTable /> */}
           </TableContainer>
         </Container>
       </Wrapper>

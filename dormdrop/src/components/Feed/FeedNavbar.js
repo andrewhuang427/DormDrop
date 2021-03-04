@@ -53,6 +53,13 @@ const Placeholder = styled.div`
 
 const SidebarHeading = styled.div`
   text-align: center;
+  font-size: 15px;
+`;
+
+const NoOrdersPlaced = styled.div`
+  text-align: center;
+  margin-top: 30px;
+  font-size: 13px;
 `;
 
 export default function FeedNavbar({ removeFromCart, cart }) {
@@ -138,7 +145,11 @@ export default function FeedNavbar({ removeFromCart, cart }) {
             <CloseIcon />
           </IconButton>
           <SidebarHeading>Cart - Order Summary</SidebarHeading>
-          <Cart cart={cart} removeFromCart={removeFromCart} />
+          {cart.length === 0 ? (
+            <NoOrdersPlaced>No orders placed yet</NoOrdersPlaced>
+          ) : (
+            <Cart cart={cart} removeFromCart={removeFromCart} />
+          )}
         </Placeholder>
       </Drawer>
     </div>

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import Skeleton from "@material-ui/lab/Skeleton";
 import styled from "styled-components";
@@ -9,10 +11,12 @@ const Card = styled.div`
   cursor: pointer;
   width: auto;
   height: auto;
-  padding: 15px;
+  padding: 20px;
   overflow: hidden;
+  border-radius: 10px;
   &:hover {
-    background-color: #00000010;
+    transition: 0.3s;
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.2);
   }
 `;
 
@@ -64,13 +68,6 @@ const RestaurantDetailsContainer = styled.div`
 
 const TitleContainer = styled.div``;
 
-const Price = styled.div`
-  display: inline-block;
-  color: #3ab44b;
-  margin: 5px auto;
-  font-weight: 600;
-`;
-
 const NameContainer = styled.h3`
   display: inline-block;
   margin-top: 0;
@@ -85,9 +82,24 @@ const Hours = styled.div`
   font-size: 13px;
 `;
 
-const MaxOrder = styled.div`
+const MaxOrderContainer = styled.div`
+  margin: 10px auto;
+`;
+
+const MaxOrder = styled.span`
   margin: 5px auto;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 5px;
+  border-radius: 10px;
+  color: #9900ff;
+  background-color: #f4f4f4;
+`;
+
+const Price = styled.div`
+  display: inline-block;
+  color: #3ab44b;
+  font-weight: 600;
   font-size: 13px;
 `;
 
@@ -115,62 +127,71 @@ function OptionCard({ Details, addToCart, active }) {
 
   return (
     <>
-      <Card
-        onClick={() => {
-          setOpen(!modalOpen);
-        }}
-      >
-        {isLoading ? (
-          <Box width={"100%"}>
-            <Skeleton variant="rect" width={"100%"} height={200} />
-            <Box pt={0.5}>
-              <Skeleton />
-              <Skeleton width="60%" />
-            </Box>
-          </Box>
-        ) : (
-          <>
-            <ImageContainer>
-              <Image src={Details.data.imageURL} />
-              {!active ? (
-                <Overlay>
-                  <OverlayText>
-                    Available Later
-                    <Hours style={{ color: "white" }}>
-                      Hours: {availableTimesToString(Details.data.timeSlots)}
-                    </Hours>
-                  </OverlayText>
-                </Overlay>
-              ) : (
-                ""
-              )}
-            </ImageContainer>
-            <CardBottom>
-              <RestaurantDetailsContainer>
-                <Box textOverflow="ellipsis">
-                  <TitleContainer>
-                    <NameContainer>{Details.data.displayName}</NameContainer>
-                  </TitleContainer>
+      <Grid item xs={12} sm={4}>
+        <Paper elevation={0} style={{ height: "100%" }}>
+          <Card
+            onClick={() => {
+              setOpen(!modalOpen);
+            }}
+          >
+            {isLoading ? (
+              <Box width={"100%"}>
+                <Skeleton variant="rect" width={"100%"} height={200} />
+                <Box pt={0.5}>
+                  <Skeleton />
+                  <Skeleton width="60%" />
                 </Box>
-                <Price>
-                  $ {Number(Details.data.price).toFixed(2) + " Delivery"}
-                </Price>
-                <MaxOrder>
-                  Order by yourself or with you friends and stack up to{" "}
-                  {Details.data.maxOrders} orders at the same fee.
-                </MaxOrder>
-              </RestaurantDetailsContainer>
-            </CardBottom>
-          </>
-        )}
-      </Card>
-      <OrderModal
-        open={modalOpen}
-        setOpen={setOpen}
-        Details={Details}
-        addToCart={addToCart}
-        active={active}
-      />
+              </Box>
+            ) : (
+              <>
+                <ImageContainer>
+                  <Image src={Details.data.imageURL} />
+                  {!active ? (
+                    <Overlay>
+                      <OverlayText>
+                        Available Later
+                        <Hours style={{ color: "white" }}>
+                          Hours:{" "}
+                          {availableTimesToString(Details.data.timeSlots)}
+                        </Hours>
+                      </OverlayText>
+                    </Overlay>
+                  ) : (
+                    ""
+                  )}
+                </ImageContainer>
+                <CardBottom>
+                  <RestaurantDetailsContainer>
+                    <Box>
+                      <TitleContainer>
+                        <NameContainer>
+                          {Details.data.displayName}
+                        </NameContainer>
+                      </TitleContainer>
+                    </Box>
+                    <Price>
+                      $ {Number(Details.data.price).toFixed(2) + " Delivery"}
+                    </Price>
+                    <MaxOrderContainer>
+                      <MaxOrder>
+                        Stack up to {Details.data.maxOrders} orders at the same
+                        fee
+                      </MaxOrder>
+                    </MaxOrderContainer>
+                  </RestaurantDetailsContainer>
+                </CardBottom>
+              </>
+            )}
+          </Card>
+          <OrderModal
+            open={modalOpen}
+            setOpen={setOpen}
+            Details={Details}
+            addToCart={addToCart}
+            active={active}
+          />
+        </Paper>
+      </Grid>
     </>
   );
 }

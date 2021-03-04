@@ -199,7 +199,8 @@ function CartItem({ order, orderIndex, removeFromCart }) {
                   ) : (
                     ""
                   )}
-                  {singleOrder.restaurant !== undefined ? (
+                  {singleOrder.restaurant !== undefined &&
+                  singleOrder.restaurant !== "" ? (
                     <FieldContainer>
                       <Field>Restaurant</Field>
                       <Value>{singleOrder.restaurant}</Value>
@@ -207,7 +208,7 @@ function CartItem({ order, orderIndex, removeFromCart }) {
                   ) : (
                     ""
                   )}
-                  {singleOrder.name !== undefined ? (
+                  {singleOrder.name !== undefined && singleOrder.name !== "" ? (
                     <FieldContainer>
                       <Field>Customer Name</Field>
                       <Value>{singleOrder.name}</Value>
@@ -215,7 +216,8 @@ function CartItem({ order, orderIndex, removeFromCart }) {
                   ) : (
                     ""
                   )}
-                  {singleOrder.orderNumber !== undefined ? (
+                  {singleOrder.orderNumber !== undefined &&
+                  singleOrder.orderNumber !== "" ? (
                     <FieldContainer>
                       <Field>Order #</Field>
                       <Value>{singleOrder.orderNumber}</Value>
@@ -248,6 +250,15 @@ function CartItem({ order, orderIndex, removeFromCart }) {
                     ""
                   )}
                   {singleOrder.includeSauces === true ? (
+                    <FieldContainer>
+                      <Field>Sauces</Field>
+                      <Value>{singleOrder.sauces}</Value>
+                    </FieldContainer>
+                  ) : (
+                    ""
+                  )}
+                  {singleOrder.additionalInstructions !== "" &&
+                  singleOrder.additionalInstructions !== undefined ? (
                     <FieldContainer>
                       <Field>Additional Instructions</Field>
                       <Value>{singleOrder.additionalInstructions}</Value>

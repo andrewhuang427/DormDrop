@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import Divider from "@material-ui/core/Divider";
-import Paper from "@material-ui/core/Paper";
 import OptionCard from "./OptionCard";
 import styled from "styled-components";
 import { db } from "../../firebase/firebase";
@@ -14,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     maxWidth: 1300,
-    marginTop: 20,
+    marginTop: 30,
     marginLeft: "auto",
     marginRight: "auto",
   },
@@ -32,7 +30,9 @@ const SectionHeadingContainer = styled.div`
 const SectionHeading = styled.h1`
   font-size: 25px;
   margin-top: 0;
-  margin-bottom: 3px;
+  margin-bottom: 10px;
+  border-left: 5px solid #3ab44b;
+  padding-left: 10px;
 `;
 
 const SectionSubheading = styled.div`
@@ -72,16 +72,15 @@ export default function Feed({ addToCart }) {
   return (
     <>
       <div className={classes.root}>
-        <Grid container spacing={2} className={classes.content}>
+        <Grid container spacing={1} className={classes.content}>
           <Grid item xs={12}>
             <SectionHeadingContainer>
-              <SectionHeading>Available now</SectionHeading>
+              <SectionHeading>Delivery Options - Available now</SectionHeading>
               <SectionSubheading>
                 Select from the following options. You can selected up to the
                 specified number of orders.
               </SectionSubheading>
             </SectionHeadingContainer>
-            <Divider />
           </Grid>
           {activeOptions.length === 0 ? (
             <NoneAvailable>No options are currently available</NoneAvailable>
@@ -91,40 +90,31 @@ export default function Feed({ addToCart }) {
           {activeOptions.map((option, index) => {
             console.log(option);
             return (
-              <Grid item xs={12} sm={4}>
-                <Paper key={index} elevation={1} style={{ height: "100%" }}>
-                  <OptionCard
-                    Details={option}
-                    addToCart={addToCart}
-                    active={true}
-                  />
-                </Paper>
-              </Grid>
+              <OptionCard
+                Details={option}
+                addToCart={addToCart}
+                active={true}
+              />
             );
           })}
         </Grid>
         <Grid container spacing={2} className={classes.content}>
           <Grid item xs={12}>
             <SectionHeadingContainer>
-              <SectionHeading>Available Later</SectionHeading>
+              <SectionHeading>Delivery Options - Available Later</SectionHeading>
               <SectionSubheading>
                 These options will be available later.
               </SectionSubheading>
             </SectionHeadingContainer>
-            <Divider />
           </Grid>
           {inactiveOptions.map((option, index) => {
             console.log(option);
             return (
-              <Grid item xs={12} sm={4}>
-                <Paper key={index} elevation={1} style={{ height: "100%" }}>
-                  <OptionCard
-                    Details={option}
-                    addToCart={addToCart}
-                    active={false}
-                  />
-                </Paper>
-              </Grid>
+              <OptionCard
+                Details={option}
+                addToCart={addToCart}
+                active={false}
+              />
             );
           })}
         </Grid>

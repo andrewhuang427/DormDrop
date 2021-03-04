@@ -16,7 +16,7 @@ const ModalContainer = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 10px;
+  border-radius: 5px;
   width: 1060px;
   height: 600px;
   background: white;
@@ -160,6 +160,7 @@ export default function RestaurantForm({
     console.log(orders);
     const order = {
       price: Details.data.price,
+      restaurantId: Details.id,
       restaurant: Details.data.displayName,
       orderDetails: orders,
     };
