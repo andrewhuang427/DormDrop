@@ -65,8 +65,19 @@ export const validateRestaurantForm = (data) => {
   }
 };
 
+const integerToDayOfTheWeek = {
+  0: "sunday",
+  1: "monday",
+  2: "tuesday",
+  3: "wednesday",
+  4: "thursday",
+  5: "friday",
+  6: "saturday",
+};
+
 export const sortOptions = (options) => {
   const now = new Date();
+  const dayOfTheWeek = integerToDayOfTheWeek[now.getDay()];
   const arr = now.toTimeString().split(":");
   const timeAsInteger = Number(arr[0]) * 60 + Number(arr[1]);
 
@@ -77,14 +88,11 @@ export const sortOptions = (options) => {
 
   for (let i = 0; i < options.length; ++i) {
     const option = options[i];
-    console.log(option);
-    const hoursArray = option.data.timeSlots;
+    const hoursArray = option.data.hours[dayOfTheWeek];
     for (let j = 0; j < hoursArray.length; ++j) {
       const { open, close } = hoursArray[j];
-      console.log("open: " + open + "   " + " close: " + close);
       if (open < close && timeAsInteger > open && timeAsInteger < close) {
         object.active.push(option);
-        // typical period starting and ending on the same day
       } else if (
         close < open &&
         (timeAsInteger > open || timeAsInteger < close)

@@ -5,10 +5,14 @@ import OptionCard from "./OptionCard";
 import styled from "styled-components";
 import { db } from "../../firebase/firebase";
 import { sortOptions } from "../../utils/index";
+import { Paper } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+  },
+  locationSelect: {
+    padding: theme.spacing(2),
   },
   content: {
     maxWidth: 1300,
@@ -98,10 +102,12 @@ export default function Feed({ addToCart }) {
             );
           })}
         </Grid>
-        <Grid container spacing={2} className={classes.content}>
+        <Grid container spacing={1} className={classes.content}>
           <Grid item xs={12}>
             <SectionHeadingContainer>
-              <SectionHeading>Delivery Options - Available Later</SectionHeading>
+              <SectionHeading>
+                Delivery Options - Available Later
+              </SectionHeading>
               <SectionSubheading>
                 These options will be available later.
               </SectionSubheading>

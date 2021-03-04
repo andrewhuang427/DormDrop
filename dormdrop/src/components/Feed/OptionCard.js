@@ -105,11 +105,13 @@ const Price = styled.div`
 
 const availableTimesToString = (times) => {
   let string = "";
-  for (let i = 0; i < times.length; ++i) {
-    const { open, close } = times[i];
-    string += integerToTime(open) + "-" + integerToTime(close);
-    if (i !== times.length - 1) {
-      string += ", ";
+  if (times !== undefined) {
+    for (let i = 0; i < times.length; ++i) {
+      const { open, close } = times[i];
+      string += integerToTime(open) + "-" + integerToTime(close);
+      if (i !== times.length - 1) {
+        string += ", ";
+      }
     }
   }
   return string;
@@ -150,10 +152,10 @@ function OptionCard({ Details, addToCart, active }) {
                     <Overlay>
                       <OverlayText>
                         Available Later
-                        <Hours style={{ color: "white" }}>
+                        {/* <Hours style={{ color: "white" }}>
                           Hours:{" "}
                           {availableTimesToString(Details.data.timeSlots)}
-                        </Hours>
+                        </Hours> */}
                       </OverlayText>
                     </Overlay>
                   ) : (

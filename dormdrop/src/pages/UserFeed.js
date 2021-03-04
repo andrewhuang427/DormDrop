@@ -23,7 +23,10 @@ const OrderNow = styled.h1`
   color: white;
 `;
 
+const LocationSelectContainer = styled.div``;
+
 function UserFeed() {
+  const [location, setLocation] = useState("");
   const [cart, setCart] = useState([]);
 
   useEffect(() => {
@@ -57,6 +60,10 @@ function UserFeed() {
       <Hero>
         <HeadingContainer>
           <OrderNow>Welcome, order now!</OrderNow>
+          <LocationSelectContainer>
+            <input type="text" placeholder="Enter Location" />
+            <button>{"->"}</button>
+          </LocationSelectContainer>
         </HeadingContainer>
       </Hero>
       <Feed addToCart={addToCart} />
