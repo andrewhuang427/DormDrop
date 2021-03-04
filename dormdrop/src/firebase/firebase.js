@@ -138,6 +138,7 @@ export const deleteImageAttachedToRestaurant = async (imageRef) => {
     const storageRef = storage.ref();
     await storageRef.child(imageRef).delete();
   } catch (error) {
+    console.log(error)
     console.log("Error occurred deleting restaurant's image");
   }
 };
@@ -146,6 +147,7 @@ export const updateRestaurant = async (id, data) => {
   try {
     await restaurantRef.doc(id).update(data);
   } catch (error) {
+    console.log(error);
     console.log("Error occurred updating restaurant");
   }
 };
