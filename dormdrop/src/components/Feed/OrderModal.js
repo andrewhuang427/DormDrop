@@ -10,6 +10,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormField from "./FormField";
 import styled from "styled-components";
 import { isValidOrder } from "../../utils/index";
+import { getPriceForLocation } from "../../utils/OrderOptions";
 
 const ModalContainer = styled.div`
   position: absolute;
@@ -118,6 +119,7 @@ const orderSchema = (formProperties) => {
 
 export default function RestaurantForm({
   Details,
+  location,
   open,
   setOpen,
   addToCart,
@@ -159,7 +161,7 @@ export default function RestaurantForm({
     event.preventDefault();
     console.log(orders);
     const order = {
-      price: Details.data.price,
+      price: getPriceForLocation(Details, location),
       restaurantId: Details.id,
       restaurant: Details.data.displayName,
       orderDetails: orders,

@@ -1,11 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import logo from "../../images/logo.png";
-import Divider from "@material-ui/core/Divider";
 const Wrapper = styled.div`
   margin: 30px 0 0 0;
   padding: 20px;
-  border-top: 1px solid #e0e0e0;
 `;
 
 const Container = styled.div`
@@ -108,7 +106,6 @@ export default function Hero() {
             </List>
           </Column>
         </Grid>
-        <Divider />
         <BottomContainer>
           <Copyright>© 2021 DormDrop LLC</Copyright>
           <Terms>Terms</Terms>

@@ -7,6 +7,7 @@ import Divider from "@material-ui/core/Divider";
 import BeatLoader from "react-spinners/BeatLoader";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
+import { getPriceForLocation } from "../../utils/OrderOptions";
 
 const CheckoutButtonContainer = styled.div``;
 
@@ -28,6 +29,24 @@ const FullWidthButton = styled.button`
 `;
 
 const OrderSummaryContainer = styled.div``;
+
+const ButtonContainer = styled.div`
+  margin: 10px auto;
+  text-align: right;
+`;
+
+const SimpleButton = styled.button`
+  cursor: pointer;
+  outline: none;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-weight: 600;
+  color: #3ab44b;
+  &:hover {
+    color: #3ab44acc;
+  }
+`;
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -176,6 +195,8 @@ function CartItem({ order, orderIndex, removeFromCart }) {
     removeFromCart(orderIndex);
   };
 
+  const handleEditOrder = () => {};
+
   return (
     <Paper elevation={3} className={classes.orderCard}>
       <div className={classes.removeIcon}>
@@ -249,14 +270,6 @@ function CartItem({ order, orderIndex, removeFromCart }) {
                   ) : (
                     ""
                   )}
-                  {singleOrder.includeSauces === true ? (
-                    <FieldContainer>
-                      <Field>Sauces</Field>
-                      <Value>{singleOrder.sauces}</Value>
-                    </FieldContainer>
-                  ) : (
-                    ""
-                  )}
                   {singleOrder.additionalInstructions !== "" &&
                   singleOrder.additionalInstructions !== undefined ? (
                     <FieldContainer>
@@ -272,6 +285,9 @@ function CartItem({ order, orderIndex, removeFromCart }) {
             );
           })}
         </OrderDetails>
+        <ButtonContainer>
+          <SimpleButton onClick={handleEditOrder}>Edit</SimpleButton>
+        </ButtonContainer>
       </div>
     </Paper>
   );

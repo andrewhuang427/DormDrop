@@ -121,6 +121,7 @@ function IncludeDrinkSelect({ order, editOrder, orderIndex }) {
         control={<Checkbox onClick={handleChange} checked={includeDrink} />}
         label="Add Drink"
         value={order.includeDrink}
+        style={{ marginBottom: 10 }}
       />
       {includeDrink ? (
         <div>
@@ -196,6 +197,7 @@ function IncludeSauces({ order, editOrder, orderIndex }) {
         value="end"
         control={<Checkbox onChange={handleChange} checked={includeSauces} />}
         label="Include Sauces"
+        style={{ marginBottom: 10 }}
       />
       {includeSauces ? (
         <div>

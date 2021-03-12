@@ -29,12 +29,12 @@ function Checkout() {
 
   useEffect(() => {
     if (
-      window.localStorage.getItem("cart") === null ||
-      JSON.parse(window.localStorage.getItem("cart")).length === 0
+      window.localStorage.getItem("shopping_cart") === null ||
+      JSON.parse(window.localStorage.getItem("shopping_cart")).length === 0
     ) {
       history.push("/feed");
     } else {
-      setCart(JSON.parse(window.localStorage.getItem("cart")));
+      setCart(JSON.parse(window.localStorage.getItem("shopping_cart")));
     }
   }, []);
 

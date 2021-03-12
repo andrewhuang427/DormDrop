@@ -6,6 +6,7 @@ import Skeleton from "@material-ui/lab/Skeleton";
 import styled from "styled-components";
 import OrderModal from "./OrderModal";
 import { integerToTime } from "../../utils/index";
+import { getPriceForLocation } from "../../utils/OrderOptions";
 
 const Card = styled.div`
   cursor: pointer;
@@ -97,6 +98,8 @@ const MaxOrder = styled.span`
 `;
 
 const Price = styled.div`
+  margin: 5px auto;
+  padding: 5px;
   display: inline-block;
   color: #3ab44b;
   font-weight: 600;
@@ -117,7 +120,7 @@ const availableTimesToString = (times) => {
   return string;
 };
 
-function OptionCard({ Details, addToCart, active }) {
+function OptionCard({ Details, location, addToCart, active }) {
   const [modalOpen, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -150,13 +153,7 @@ function OptionCard({ Details, addToCart, active }) {
                   <Image src={Details.data.imageURL} />
                   {!active ? (
                     <Overlay>
-                      <OverlayText>
-                        Available Later
-                        {/* <Hours style={{ color: "white" }}>
-                          Hours:{" "}
-                          {availableTimesToString(Details.data.timeSlots)}
-                        </Hours> */}
-                      </OverlayText>
+                      <OverlayText>Available Later</OverlayText>
                     </Overlay>
                   ) : (
                     ""
@@ -172,7 +169,9 @@ function OptionCard({ Details, addToCart, active }) {
                       </TitleContainer>
                     </Box>
                     <Price>
-                      $ {Number(Details.data.price).toFixed(2) + " Delivery"}
+                      ${" "}
+                      {getPriceForLocation(Details, location).toFixed(2) +
+                        " Delivery"}
                     </Price>
                     <MaxOrderContainer>
                       <MaxOrder>
@@ -189,6 +188,7 @@ function OptionCard({ Details, addToCart, active }) {
             open={modalOpen}
             setOpen={setOpen}
             Details={Details}
+            location={location}
             addToCart={addToCart}
             active={active}
           />

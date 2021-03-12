@@ -9,7 +9,6 @@ const Hero = styled.div`
   padding-top: 20px;
   padding-bottom: 20px;
   background-color: #3ab44b;
-  box-shadow: inset 0px -11px 8px -10px #888888;
 `;
 
 const HeadingContainer = styled.div`
@@ -26,15 +25,15 @@ const OrderNow = styled.h1`
 const LocationSelectContainer = styled.div``;
 
 function UserFeed() {
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState("South 40");
   const [cart, setCart] = useState([]);
 
   useEffect(() => {
-    if (window.localStorage.getItem("cart") === null) {
+    if (window.localStorage.getItem("shopping_cart") === null) {
       setCart([]);
-      window.localStorage.setItem("cart", []);
+      window.localStorage.setItem("shopping_cart", []);
     } else {
-      setCart(JSON.parse(window.localStorage.getItem("cart")));
+      setCart(JSON.parse(window.localStorage.getItem("shopping_cart")));
     }
   }, []);
 
@@ -51,7 +50,7 @@ function UserFeed() {
   };
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
+    localStorage.setItem("shopping_cart", JSON.stringify(cart));
   }, [cart]);
 
   return (
@@ -60,13 +59,13 @@ function UserFeed() {
       <Hero>
         <HeadingContainer>
           <OrderNow>Welcome, order now!</OrderNow>
-          <LocationSelectContainer>
+          {/* <LocationSelectContainer>
             <input type="text" placeholder="Enter Location" />
             <button>{"->"}</button>
-          </LocationSelectContainer>
+          </LocationSelectContainer> */}
         </HeadingContainer>
       </Hero>
-      <Feed addToCart={addToCart} />
+      <Feed addToCart={addToCart} location={location} />
       <Footer />
     </>
   );

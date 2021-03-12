@@ -48,10 +48,11 @@ const SectionSubheading = styled.div`
 const NoneAvailable = styled.div`
   width: 100%;
   text-align: center;
-  margin: 20px auto;
+  margin: 50px auto;
+  font-size: 13px;
 `;
 
-export default function Feed({ addToCart }) {
+export default function Feed({ addToCart, location }) {
   const classes = useStyles();
   const [activeOptions, setActiveOptions] = useState([]);
   const [inactiveOptions, setInactiveOptions] = useState([]);
@@ -79,7 +80,7 @@ export default function Feed({ addToCart }) {
         <Grid container spacing={1} className={classes.content}>
           <Grid item xs={12}>
             <SectionHeadingContainer>
-              <SectionHeading>Delivery Options - Available now</SectionHeading>
+              <SectionHeading>Available now</SectionHeading>
               <SectionSubheading>
                 Select from the following options. You can selected up to the
                 specified number of orders.
@@ -96,6 +97,7 @@ export default function Feed({ addToCart }) {
             return (
               <OptionCard
                 Details={option}
+                location={location}
                 addToCart={addToCart}
                 active={true}
               />
@@ -105,19 +107,23 @@ export default function Feed({ addToCart }) {
         <Grid container spacing={1} className={classes.content}>
           <Grid item xs={12}>
             <SectionHeadingContainer>
-              <SectionHeading>
-                Delivery Options - Available Later
-              </SectionHeading>
+              <SectionHeading>Available Later</SectionHeading>
               <SectionSubheading>
                 These options will be available later.
               </SectionSubheading>
             </SectionHeadingContainer>
           </Grid>
+          {inactiveOptions.length === 0 ? (
+            <NoneAvailable>All options are currently available</NoneAvailable>
+          ) : (
+            ""
+          )}
           {inactiveOptions.map((option, index) => {
             console.log(option);
             return (
               <OptionCard
                 Details={option}
+                location={location}
                 addToCart={addToCart}
                 active={false}
               />

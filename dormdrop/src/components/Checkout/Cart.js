@@ -122,7 +122,8 @@ function CartItem({ order, orderIndex }) {
                   ) : (
                     ""
                   )}
-                  {singleOrder.restaurant !== undefined ? (
+                  {singleOrder.restaurant !== undefined &&
+                  singleOrder.restaurant !== "" ? (
                     <FieldContainer>
                       <Field>Restaurant</Field>
                       <Value>{singleOrder.restaurant}</Value>
@@ -130,7 +131,7 @@ function CartItem({ order, orderIndex }) {
                   ) : (
                     ""
                   )}
-                  {singleOrder.name !== undefined ? (
+                  {singleOrder.name !== undefined && singleOrder.name !== "" ? (
                     <FieldContainer>
                       <Field>Customer Name</Field>
                       <Value>{singleOrder.name}</Value>
@@ -138,7 +139,8 @@ function CartItem({ order, orderIndex }) {
                   ) : (
                     ""
                   )}
-                  {singleOrder.orderNumber !== undefined ? (
+                  {singleOrder.orderNumber !== undefined &&
+                  singleOrder.orderNumber !== "" ? (
                     <FieldContainer>
                       <Field>Order #</Field>
                       <Value>{singleOrder.orderNumber}</Value>
@@ -170,7 +172,8 @@ function CartItem({ order, orderIndex }) {
                   ) : (
                     ""
                   )}
-                  {singleOrder.includeSauces === true ? (
+                  {singleOrder.additionalInstructions !== "" &&
+                  singleOrder.additionalInstructions !== undefined ? (
                     <FieldContainer>
                       <Field>Additional Instructions</Field>
                       <Value>{singleOrder.additionalInstructions}</Value>
